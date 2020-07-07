@@ -11,7 +11,7 @@ enum NodeType {
   Text(TextNode),
   // CDATASection(CDATASectionNode),
   // ProcessingInstruction(ProcessingInstructionNode),
-  // Comment(CommentNode),
+  Comment(CommentNode),
   // Document(DocumentNode),
   // DocumentType(DocumentTypeNode),
   // DocumentFragment(DocumentFragmentNode),
@@ -22,22 +22,13 @@ struct ElementNode {
   attributes: AttrMap,
 }
 
-
-// impl ElementNode {
-//   pub fn get() -> String {
-//     return self.tagName;
-//   }
-// }
-
 struct TextNode {
   text: String,
 }
 
-// impl TextNode {
-//   pub fn get() -> String {
-//     return "#text";
-//   }
-// }
+struct CommentNode {
+  data: String,
+}
 
 fn text(data: String) -> Node {
   return Node { 
