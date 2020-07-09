@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-pub mod dom;
+mod dom;
 
 fn main() {
 
@@ -9,7 +9,8 @@ fn main() {
 
   println!("Hello, world!");
 
-  dom::pretty_print_dom_tree(elem, 0);
+  dom::pretty_print_dom_tree(&elem, 0);
+  dom::pretty_print_dom_tree(&elem, 0);
 
 }
 

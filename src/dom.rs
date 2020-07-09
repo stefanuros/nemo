@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 type AttrMap = HashMap<String, String>;
 
-
 // 
 // Node
 // 
@@ -36,7 +35,7 @@ enum NodeType {
 
 impl NodeType {
   fn get_node_name(&self) -> String {
-    match *self {
+    match self {
       NodeType::Element(ref e) => return e.get_node_name(),
       NodeType::Text(ref t) => return t.get_node_name(),
       NodeType::Comment(ref c) => return c.get_node_name(),
@@ -106,13 +105,13 @@ pub fn elem(name: &str, attrs: AttrMap, children: Vec<Node>) -> Node {
   }
 }
 
-pub fn pretty_print_dom_tree(root: Node, level: usize) {
+pub fn pretty_print_dom_tree(root: &Node, level: usize) {
   let indent = level * 4;
   // Print the name based on the 
   print!("{:indent$}{}\n", "", root.get_node_name(), indent=indent);
 
   // Loop through the children
-  for child in root.children {
+  for child in &root.children {
     pretty_print_dom_tree(child, indent + 1);
   }
 }
