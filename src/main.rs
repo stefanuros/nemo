@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+mod dom_nodes;
+mod types;
 mod dom;
 
 fn main() {
