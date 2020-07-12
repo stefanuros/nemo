@@ -4,6 +4,7 @@ mod dom_nodes;
 mod types;
 mod tokenizer;
 mod tree_constructor;
+mod errors;
 mod dom;
 
 fn main() {
