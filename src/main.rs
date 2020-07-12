@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 mod dom_nodes;
 mod types;
+mod tokenizer;
+mod tree_constructor;
 mod dom;
 
 fn main() {
