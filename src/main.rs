@@ -14,8 +14,11 @@ fn main() {
 
   println!("Hello, world!");
 
-  dom::pretty_print_dom_tree(&elem, 0);
-  dom::pretty_print_dom_tree(&elem, 0);
+  // dom::pretty_print_dom_tree(&elem, 0);
+  // dom::pretty_print_dom_tree(&elem, 0);
+
+  // tokenizer::tokenize(types::data_states::DataState::RCDataState, '<')
+  tokenizer::init_tokenization();
 
 }
 

@@ -1,25 +1,63 @@
 use crate::errors::tokenizer_errors::unexpected_null_character_parse_error;
+use crate::types::data_states::DataState;
+use crate::types::tokens::Token;
 
-pub fn data_state_transition(c: char) {
-  print!("Data State: '{}'", c);
+pub fn data_state_transition(
+  c: Option<char>, 
+  current_state: &mut DataState, 
+  return_state: &mut DataState,
+  // TODO This can be removed cause its not used in this function
+  create_token: &mut Option<Token>
+) -> (Option<Vec<Token>>, bool) {
+  println!("Data State, c: '{}'", c.unwrap());
 
   match c {
-    '\u{0026}' => data_state_transition_ampersand(c),
-    '\u{003C}' => data_state_transition_less_than_sign(c),
-    '\u{0000}' => data_state_transition_null(c),
-    // '\u{0026}' => data_state_transition_eof(c),
+    Some('\u{0026}') => data_state_transition_ampersand(c, current_state, return_state),
+    Some('\u{003C}') => data_state_transition_less_than_sign(c, current_state),
+    Some('\u{0000}') => data_state_transition_null(c),
+    None => data_state_transition_eof(),
     _ => data_state_transition_anything_else(c),
   }
 }
 
-fn data_state_transition_ampersand(c: char) {}
+fn data_state_transition_ampersand(
+  c: Option<char>, 
+  current_state: &mut DataState, 
+  return_state: &mut DataState
+) -> (Option<Vec<Token>>, bool) {
+  println!("Data State Ampersand: '{}'", c.unwrap());
 
-fn data_state_transition_less_than_sign(c: char) {}
+  *return_state = DataState::DataState;
+  *current_state = DataState::CharacterReferenceState;
 
-fn data_state_transition_null(c: char) {
-  unexpected_null_character_parse_error::error();
+  return (None, false);
 }
 
-fn data_state_transition_eof(c: char) {}
+fn data_state_transition_less_than_sign(
+  c: Option<char>, 
+  current_state: &mut DataState
+) -> (Option<Vec<Token>>, bool) {
+  println!("Data State Less Than Sign: '{}'", c.unwrap());
+  *current_state = DataState::TagOpenState;
 
-fn data_state_transition_anything_else(c: char) {}
+  return (None, false);
+}
+
+fn data_state_transition_null(c: Option<char>) -> (Option<Vec<Token>>, bool) {
+  println!("Data State Null: '{}'", c.unwrap());
+  unexpected_null_character_parse_error::error(DataState::DataState.to_string(), c.unwrap());
+  
+  return (Some(vec![Token::CharacterToken(c.unwrap())]), false);
+}
+
+fn data_state_transition_eof() -> (Option<Vec<Token>>, bool) {
+  println!("Data State EOF");
+
+  return (Some(vec![Token::EOFToken]), false);
+}
+
+fn data_state_transition_anything_else(c: Option<char>) -> (Option<Vec<Token>>, bool) {
+  println!("Data State Anything Else: '{}'", c.unwrap());
+
+  return (Some(vec![Token::CharacterToken(c.unwrap())]), false);
+}
