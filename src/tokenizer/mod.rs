@@ -89,6 +89,7 @@ fn tokenize(
   match current_state {
     DataState::DataState => state_transitions::data_state_transition(c, current_state, return_state, create_token),
     DataState::RCDataState => state_transitions::rcdata_state_transition(c, current_state, return_state),
+    DataState::RAWTEXTState => state_transitions::raw_text_state_transition(c, current_state),
     _ => (None, false),
   }
 }

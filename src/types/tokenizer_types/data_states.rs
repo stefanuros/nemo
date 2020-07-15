@@ -8,7 +8,7 @@ use std::fmt::{
 pub enum DataState {
   DataState,
   RCDataState,
-  RAWTEXTSState,
+  RAWTEXTState,
   ScriptDataState,
   PLAINTEXTState,
   TagOpenState,
