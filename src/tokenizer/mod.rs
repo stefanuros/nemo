@@ -1,8 +1,8 @@
-use crate::types::data_states::DataState;
-use crate::types::tokens::Token;
+use crate::types::tokenizer_types::data_states::DataState;
+use crate::types::tokenizer_types::tokens::Token;
+use itertools;
 
 mod state_transitions;
-
 
 pub fn init_tokenization() {
   // Read data
@@ -34,7 +34,7 @@ pub fn init_tokenization() {
   let mut current_input_character: Option<char> = None;
 
   // The iterator going through all of the characters in the input stream
-  let mut iter = html.chars();
+  let mut iter = itertools::multipeek(html.chars());
 
   let mut is_iter_empty = false;
   // Flag to check whether the next step should consume a new character or reuse the previous character
@@ -47,14 +47,21 @@ pub fn init_tokenization() {
       current_input_character = iter.next();
     }
 
+    // Pass the iter to the state handler for specific states
+    let should_pass_iter = 
+      current_state == DataState::MarkupDeclarationOpenState ||
+      current_state == DataState::AfterDOCTYPENameState;
+
     // Get the emitted tokens and whether the character is safe to iterate or if it should be reconsumed
     let (emitted_tokens, should_reconsume) = tokenize(
       current_input_character, 
       &mut current_state, 
       &mut return_state,
-      &mut create_token
+      &mut create_token,
+      if should_pass_iter { Some(&mut iter) } else { None },
     );
 
+    // Deal with current_input_character reconsuming
     reconsume = should_reconsume;
 
     // Deal with any emitted tokens
@@ -76,7 +83,8 @@ fn tokenize(
   c: Option<char>, 
   current_state: &mut DataState, 
   return_state: &mut DataState,
-  create_token: &mut Option<Token>
+  create_token: &mut Option<Token>,
+  iter: Option<&mut itertools::MultiPeek<std::str::Chars>>
 ) -> (Option<Vec<Token>>, bool) {
   match current_state {
     DataState::DataState => state_transitions::data_state_transition(c, current_state, return_state, create_token),
@@ -84,3 +92,31 @@ fn tokenize(
     _ => (None, false),
   }
 }
+
+  // The following code is example code for states 42 and 56
+  // let mut test_string: String = "".to_string();
+
+  // for i in 0 .. 7 {
+  //   match iter.peek() {
+  //     Some(v) => test_string = [test_string, v.to_string()].concat(),
+  //     None => print!("run anything else code"),
+  //   }
+
+  //   if test_string.to_ascii_lowercase() == "doctype" {
+  //     print!("run doctype code");
+  //   }
+
+  //   match test_string.as_str() {
+  //     "--" => print!("run -- code"),
+  //     "[CDATA[" => print!("run cdata code"),
+  //     _ => (),
+  //   }
+
+  //   if !"doctype".starts_with(test_string.to_ascii_lowercase().as_str()) &&
+  //     !"[CDATA[".starts_with(test_string.as_str()) &&
+  //     !"--".starts_with(test_string.as_str()) {
+  //       print!("run anything else code")
+  //   }
+  // }
+
+  // println!("{:?}", iter.peek().unwrap().to_string());

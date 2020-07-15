@@ -1,5 +1,5 @@
 use crate::errors::tokenizer_errors::unexpected_null_character_parse_error;
-use crate::types::data_states::DataState::RCDataState;
+use crate::types::tokenizer_types::data_states::DataState::RCDataState;
 
 pub fn rcdata_state_transition(c: Option<char>) {
   println!("RCDATA State, c: '{}'", c.unwrap());

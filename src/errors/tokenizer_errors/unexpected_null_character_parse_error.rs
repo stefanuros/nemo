@@ -1,5 +1,3 @@
-use crate::types::data_states::DataState;
-
 pub fn error(state: String, c: char) {
   // TODO Move this to static assets file
   const ERROR_CODE: &str = "unexpected-null-character";
