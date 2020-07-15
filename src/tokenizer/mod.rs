@@ -88,7 +88,7 @@ fn tokenize(
 ) -> (Option<Vec<Token>>, bool) {
   match current_state {
     DataState::DataState => state_transitions::data_state_transition(c, current_state, return_state, create_token),
-    // DataState::RCDataState => state_transitions::rcdata_state_transition(c),
+    DataState::RCDataState => state_transitions::rcdata_state_transition(c, current_state, return_state),
     _ => (None, false),
   }
 }
