@@ -4,7 +4,7 @@ use std::fmt::{
   Result
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Token {
   CharacterToken(char),
   CommentToken(String),
