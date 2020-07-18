@@ -86,7 +86,7 @@ fn tokenize(
   create_token: &mut Option<Token>,
   iter: Option<&mut itertools::MultiPeek<std::str::Chars>>
 ) -> (Option<Vec<Token>>, bool) {
-  match current_state {
+  return match current_state {
     DataState::DataState => state_transitions::data_state_transition(c, current_state, return_state),
     DataState::RCDataState => state_transitions::rcdata_state_transition(c, current_state, return_state),
     DataState::RAWTEXTState => state_transitions::rawtext_state_transition(c, current_state),

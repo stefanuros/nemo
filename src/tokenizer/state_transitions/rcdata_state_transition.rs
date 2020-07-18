@@ -9,7 +9,7 @@ pub fn rcdata_state_transition(
 ) -> (Option<Vec<Token>>, bool) {
   println!("RCDATA State, c: '{:?}'", c);
 
-  match c {
+  return match c {
     Some('\u{0026}') => rcdata_state_transition_ampersand(c, current_state, return_state),
     Some('\u{003C}') => rcdata_state_transition_less_than_sign(c, current_state),
     Some('\u{0000}') => rcdata_state_transition_null(c),
