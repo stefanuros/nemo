@@ -9,7 +9,7 @@ pub fn data_state_transition(
 ) -> (Option<Vec<Token>>, bool) {
   println!("Data State, c: '{:?}'", c);
 
-  match c {
+  return match c {
     Some('\u{0026}') => data_state_transition_ampersand(c, current_state, return_state),
     Some('\u{003C}') => data_state_transition_less_than_sign(c, current_state),
     Some('\u{0000}') => data_state_transition_null(c),

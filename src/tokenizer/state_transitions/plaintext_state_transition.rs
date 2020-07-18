@@ -7,7 +7,7 @@ pub fn plaintext_state_transition(
 ) -> (Option<Vec<Token>>, bool) {
   println!("PLAINTEXT State, c: '{:?}'", c);
 
-  match c {
+  return match c {
     Some('\u{0000}') => plaintext_state_transition_null(c),
     None => plaintext_state_transition_eof(),
     _ => plaintext_state_transition_anything_else(c),
