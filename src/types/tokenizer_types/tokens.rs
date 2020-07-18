@@ -9,6 +9,7 @@ pub enum Token {
   CharacterToken(char),
   CommentToken(String),
   CurrentTagToken(String),
+  EndTagToken(String),
   EOFToken,
   StartTagToken(String)
 }
