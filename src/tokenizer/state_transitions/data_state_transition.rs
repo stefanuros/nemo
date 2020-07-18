@@ -6,8 +6,6 @@ pub fn data_state_transition(
   c: Option<char>, 
   current_state: &mut DataState, 
   return_state: &mut DataState
-  // TODO This can be removed cause its not used in this function
-  // create_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
   println!("Data State, c: '{:?}'", c);
 

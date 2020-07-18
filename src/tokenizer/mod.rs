@@ -92,6 +92,7 @@ fn tokenize(
     DataState::RAWTEXTState => state_transitions::rawtext_state_transition(c, current_state),
     DataState::ScriptDataState => state_transitions::script_data_state_transition(c, current_state),
     DataState::PLAINTEXTState => state_transitions::plaintext_state_transition(c),
+    DataState::TagOpenState => state_transitions::tag_open_state_transition(c, current_state, create_token),
     _ => (None, false),
   }
 }
