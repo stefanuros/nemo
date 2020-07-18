@@ -20,7 +20,7 @@ pub enum DataState {
   RAWTEXTLessThanSignState,
   RAWTEXTEndTagOpenState,
   RAWTEXTEndTagNameState,
-  ScriptDataLessThanState,
+  ScriptDataLessThanSignState,
   ScriptDataEndTagOpenState,
   ScriptDataEndTagNameState,
   ScriptDataEscapeStartDate,
