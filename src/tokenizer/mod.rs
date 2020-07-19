@@ -26,7 +26,7 @@ pub fn init_tokenization() {
   let mut tokens: Vec<Token> = Vec::new();
 
   // A created token that can be used to keep track of tokens being built over multiple characters
-  let mut create_token: Option<Token> = None;
+  let mut current_token: Option<Token> = None;
 
   let mut current_state = DataState::default();
   let mut return_state = DataState::default();
@@ -57,7 +57,7 @@ pub fn init_tokenization() {
       current_input_character, 
       &mut current_state, 
       &mut return_state,
-      &mut create_token,
+      &mut current_token,
       if should_pass_iter { Some(&mut iter) } else { None },
     );
 
@@ -83,7 +83,7 @@ fn tokenize(
   c: Option<char>, 
   current_state: &mut DataState, 
   return_state: &mut DataState,
-  create_token: &mut Option<Token>,
+  current_token: &mut Option<Token>,
   iter: Option<&mut itertools::MultiPeek<std::str::Chars>>
 ) -> (Option<Vec<Token>>, bool) {
   return match current_state {
@@ -92,9 +92,9 @@ fn tokenize(
     DataState::RAWTEXTState => state_transitions::rawtext_state_transition(c, current_state),
     DataState::ScriptDataState => state_transitions::script_data_state_transition(c, current_state),
     DataState::PLAINTEXTState => state_transitions::plaintext_state_transition(c),
-    DataState::TagOpenState => state_transitions::tag_open_state_transition(c, current_state, create_token),
-    DataState::EndTagOpenState => state_transitions::end_tag_open_state_transition(c, current_state, create_token),
-    DataState::TagNameState => state_transitions::tag_name_state_transition(c, current_state, create_token),
+    DataState::TagOpenState => state_transitions::tag_open_state_transition(c, current_state, current_token),
+    DataState::EndTagOpenState => state_transitions::end_tag_open_state_transition(c, current_state, current_token),
+    DataState::TagNameState => state_transitions::tag_name_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }

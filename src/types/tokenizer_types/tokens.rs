@@ -8,10 +8,10 @@ use std::fmt::{
 pub enum Token {
   CharacterToken(char),
   CommentToken(String),
-  CurrentTagToken(String),
+  DOCTYPE(),
   EndTagToken(String),
   EOFToken,
-  StartTagToken(String)
+  StartTagToken(String),
 }
 
 impl Display for Token {
