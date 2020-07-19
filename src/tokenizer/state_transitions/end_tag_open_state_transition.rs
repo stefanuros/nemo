@@ -9,27 +9,27 @@ use crate::types::tokenizer_types::tokens::Token;
 pub fn end_tag_open_state_transition(
   c: Option<char>, 
   current_state: &mut DataState,
-  create_token: &mut Option<Token>
+  current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
   println!("End Tag Open State c: '{:?}'", c);
 
   return match c {
-    Some(x) if x.is_ascii_alphabetic() => end_tag_open_state_transition_ascii_alpha(c, current_state, create_token),
+    Some(x) if x.is_ascii_alphabetic() => end_tag_open_state_transition_ascii_alpha(c, current_state, current_token),
     Some('\u{003E}') => end_tag_open_state_transition_greater_than_sign(c, current_state),
     None => end_tag_open_state_transition_eof(),
-    _ => end_tag_open_state_transition_anything_else(c, current_state, create_token),
+    _ => end_tag_open_state_transition_anything_else(c, current_state, current_token),
   }
 }
 
 fn end_tag_open_state_transition_ascii_alpha(
   c: Option<char>,
   current_state: &mut DataState,
-  create_token: &mut Option<Token>
+  current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
   println!("End Tag Open State Ascii Alpha: '{:?}'", c);
 
   *current_state = DataState::TagNameState;
-  *create_token = Some(Token::EndTagToken("".to_string()));
+  *current_token = Some(Token::EndTagToken("".to_string()));
   
   return(None, true);
 }
@@ -65,7 +65,7 @@ fn end_tag_open_state_transition_eof() -> (Option<Vec<Token>>, bool) {
 fn end_tag_open_state_transition_anything_else(
   c: Option<char>,
   current_state: &mut DataState,
-  create_token: &mut Option<Token>
+  current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
   println!("End Tag Open State Anything Else: '{:?}'", c);
 
@@ -75,7 +75,7 @@ fn end_tag_open_state_transition_anything_else(
   );
 
   *current_state = DataState::BogusCommentState;
-  *create_token = Some(Token::CommentToken("".to_string()));
+  *current_token = Some(Token::CommentToken("".to_string()));
 
   return(None, true);
 }
@@ -88,35 +88,35 @@ mod tests {
   fn end_tag_open_state_transition_ascii_alpha() {
     const C: Option<char> = Some('A');
     let mut current_state: DataState = DataState::EndTagOpenState;
-    let mut create_token: Option<Token> = None;
+    let mut current_token: Option<Token> = None;
 
     let expected: (Option<Vec<Token>>, bool) = (None, true);
-    let result = end_tag_open_state_transition(C, &mut current_state, &mut create_token);
+    let result = end_tag_open_state_transition(C, &mut current_state, &mut current_token);
 
     assert_eq!(expected, result);
     assert_eq!(DataState::TagNameState, current_state);
-    assert_eq!(Some(Token::EndTagToken("".to_string())), create_token);
+    assert_eq!(Some(Token::EndTagToken("".to_string())), current_token);
   }
 
   #[test]
   fn end_tag_open_state_transition_greater_than_sign() {
     const C: Option<char> = Some('>');
     let mut current_state: DataState = DataState::EndTagOpenState;
-    let mut create_token: Option<Token> = None;
+    let mut current_token: Option<Token> = None;
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
-    let result = end_tag_open_state_transition(C, &mut current_state, &mut create_token);
+    let result = end_tag_open_state_transition(C, &mut current_state, &mut current_token);
 
     assert_eq!(expected, result);
     assert_eq!(DataState::DataState, current_state);
-    assert_eq!(None, create_token);
+    assert_eq!(None, current_token);
   }
 
   #[test]
   fn test_end_tag_open_state_transition_eof() {
     const C: Option<char> = None;
     let mut current_state: DataState = DataState::EndTagOpenState;
-    let mut create_token: Option<Token> = None;
+    let mut current_token: Option<Token> = None;
 
     let expected: (Option<Vec<Token>>, bool) = 
       (
@@ -127,24 +127,24 @@ mod tests {
         ]), 
         false
       );
-    let result = end_tag_open_state_transition(C, &mut current_state, &mut create_token);
+    let result = end_tag_open_state_transition(C, &mut current_state, &mut current_token);
 
     assert_eq!(expected, result);
     assert_eq!(DataState::EndTagOpenState, current_state);
-    assert_eq!(None, create_token);
+    assert_eq!(None, current_token);
   }
 
   #[test]
   fn test_end_tag_open_state_transition_anything_else() {
     const C: Option<char> = Some('5');
     let mut current_state: DataState = DataState::EndTagOpenState;
-    let mut create_token: Option<Token> = None;
+    let mut current_token: Option<Token> = None;
 
     let expected: (Option<Vec<Token>>, bool) = (None, true);
-    let result = end_tag_open_state_transition(C, &mut current_state, &mut create_token);
+    let result = end_tag_open_state_transition(C, &mut current_state, &mut current_token);
 
     assert_eq!(expected, result);
     assert_eq!(DataState::BogusCommentState, current_state);
-    assert_eq!(Some(Token::CommentToken("".to_string())), create_token);
+    assert_eq!(Some(Token::CommentToken("".to_string())), current_token);
   }
 }
