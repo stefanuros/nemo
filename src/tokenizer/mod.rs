@@ -36,6 +36,8 @@ pub fn init_tokenization() {
   // The iterator going through all of the characters in the input stream
   let mut iter = itertools::multipeek(html.chars());
 
+  let mut temporary_buffer: String = "".to_string();
+
   let mut is_iter_empty = false;
   // Flag to check whether the next step should consume a new character or reuse the previous character
   let mut reconsume = false;
@@ -58,6 +60,7 @@ pub fn init_tokenization() {
       &mut current_state, 
       &mut return_state,
       &mut current_token,
+      &mut temporary_buffer,
       if should_pass_iter { Some(&mut iter) } else { None },
     );
 
@@ -84,6 +87,7 @@ fn tokenize(
   current_state: &mut DataState, 
   return_state: &mut DataState,
   current_token: &mut Option<Token>,
+  temporary_buffer: &mut String,
   iter: Option<&mut itertools::MultiPeek<std::str::Chars>>
 ) -> (Option<Vec<Token>>, bool) {
   return match current_state {
@@ -95,6 +99,7 @@ fn tokenize(
     DataState::TagOpenState => state_transitions::tag_open_state_transition(c, current_state, current_token),
     DataState::EndTagOpenState => state_transitions::end_tag_open_state_transition(c, current_state, current_token),
     DataState::TagNameState => state_transitions::tag_name_state_transition(c, current_state, current_token),
+    DataState::RCDATALessThanSignState => state_transitions::rcdata_less_than_sign_state_transition(c, current_state, temporary_buffer),
     _ => (None, false),
   }
 }
