@@ -37,6 +37,7 @@ pub fn init_tokenization() {
   let mut iter = itertools::multipeek(html.chars());
 
   let mut temporary_buffer: String = "".to_string();
+  let mut recent_start_tag: Option<Token> = None;
 
   let mut is_iter_empty = false;
   // Flag to check whether the next step should consume a new character or reuse the previous character
@@ -61,6 +62,7 @@ pub fn init_tokenization() {
       &mut return_state,
       &mut current_token,
       &mut temporary_buffer,
+      &recent_start_tag,
       if should_pass_iter { Some(&mut iter) } else { None },
     );
 
@@ -69,6 +71,13 @@ pub fn init_tokenization() {
 
     // Deal with any emitted tokens
     if emitted_tokens.is_some() {
+      // get the most recent start tag token
+      for token in emitted_tokens.as_ref().unwrap() {
+        if let Token::StartTagToken(_) = token {
+          recent_start_tag = Some(token.clone());
+        }
+      }
+
       // Add the emitted tokens to the list of all emitted tokens
       tokens.append(&mut emitted_tokens.unwrap());
     }
@@ -88,6 +97,7 @@ fn tokenize(
   return_state: &mut DataState,
   current_token: &mut Option<Token>,
   temporary_buffer: &mut String,
+  recent_start_tag: &Option<Token>,
   iter: Option<&mut itertools::MultiPeek<std::str::Chars>>
 ) -> (Option<Vec<Token>>, bool) {
   return match current_state {
@@ -101,6 +111,7 @@ fn tokenize(
     DataState::TagNameState => state_transitions::tag_name_state_transition(c, current_state, current_token),
     DataState::RCDATALessThanSignState => state_transitions::rcdata_less_than_sign_state_transition(c, current_state, temporary_buffer),
     DataState::RCDATAEndTagOpenState => state_transitions::rcdata_end_tag_open_state_transition(c, current_state, current_token),
+    DataState::RCDATAEndTagNameState => state_transitions::rcdata_end_tag_name_state_transition(c, current_state, current_token, temporary_buffer, recent_start_tag),
     _ => (None, false),
   }
 }
