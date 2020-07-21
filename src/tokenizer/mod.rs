@@ -118,6 +118,7 @@ fn tokenize(
     DataState::ScriptDataLessThanSignState => state_transitions::script_data_less_than_sign_state_transition(c, current_state, temporary_buffer),
     DataState::ScriptDataEndTagOpenState => state_transitions::script_data_end_tag_open_state_transition(c, current_state, current_token),
     DataState::ScriptDataEndTagNameState => state_transitions::script_data_end_tag_name_state_transition(c, current_state, current_token, temporary_buffer, recent_start_tag),
+    DataState::ScriptDataEscapeStartState => state_transitions::script_data_escape_start_state_transition(c, current_state),
     _ => (None, false),
   }
 }
