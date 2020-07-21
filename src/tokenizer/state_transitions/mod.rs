@@ -9,6 +9,7 @@ mod rcdata_end_tag_name_state_transition;
 mod rcdata_end_tag_open_state_transition;
 mod rcdata_less_than_sign_state_transition;
 mod rcdata_state_transition;
+mod script_data_end_tag_name_state_transition;
 mod script_data_end_tag_open_state_transition;
 mod script_data_less_than_sign_state_transition;
 mod script_data_state_transition;
@@ -26,6 +27,7 @@ pub use rcdata_end_tag_name_state_transition::rcdata_end_tag_name_state_transiti
 pub use rcdata_end_tag_open_state_transition::rcdata_end_tag_open_state_transition;
 pub use rcdata_less_than_sign_state_transition::rcdata_less_than_sign_state_transition;
 pub use rcdata_state_transition::rcdata_state_transition;
+pub use script_data_end_tag_name_state_transition::script_data_end_tag_name_state_transition;
 pub use script_data_end_tag_open_state_transition::script_data_end_tag_open_state_transition;
 pub use script_data_less_than_sign_state_transition::script_data_less_than_sign_state_transition;
 pub use script_data_state_transition::script_data_state_transition;
