@@ -114,6 +114,7 @@ fn tokenize(
     DataState::RCDATAEndTagNameState => state_transitions::rcdata_end_tag_name_state_transition(c, current_state, current_token, temporary_buffer, recent_start_tag),
     DataState::RAWTEXTLessThanSignState => state_transitions::rawtext_less_than_sign_state_transition(c, current_state, temporary_buffer),
     DataState::RAWTEXTEndTagOpenState => state_transitions::rawtext_end_tag_open_state_transition(c, current_state, current_token),
+    DataState::RAWTEXTEndTagNameState => state_transitions::rawtext_end_tag_name_state_transition(c, current_state, current_token, temporary_buffer, recent_start_tag),
     _ => (None, false),
   }
 }
