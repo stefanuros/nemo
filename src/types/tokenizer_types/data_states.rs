@@ -80,7 +80,7 @@ pub enum DataState {
   ScriptDataEscapedLessThanSignState,
   ScriptDataEscapedState,
   ScriptDataEscapeStartDashState,
-  ScriptDataEscapeStartDate,
+  ScriptDataEscapeStartState,
   ScriptDataLessThanSignState,
   ScriptDataState,
   SelfClosingStartTagState,
