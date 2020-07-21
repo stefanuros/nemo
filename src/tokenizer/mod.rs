@@ -124,6 +124,7 @@ fn tokenize(
     DataState::ScriptDataEscapedDashState => state_transitions::script_data_escaped_dash_state_transition(c, current_state),
     DataState::ScriptDataEscapedDashDashState => state_transitions::script_data_escaped_dash_dash_state_transition(c, current_state),
     DataState::ScriptDataEscapedLessThanSignState => state_transitions::script_data_escaped_less_than_sign_state_transition(c, current_state, temporary_buffer),
+    DataState::ScriptDataEscapedEndTagOpenState => state_transitions::script_data_escaped_end_tag_open_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }
