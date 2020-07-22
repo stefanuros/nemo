@@ -66,6 +66,7 @@ pub enum DataState {
   RCDATALessThanSignState,
   RCDataState,
   ScriptDataDDoubleEscapedDashState,
+  ScriptDataDoubleEscapedDashDashState,
   ScriptDataDoubleEscapedDashState,
   ScriptDataDoubleEscapedLessThanSignState,
   ScriptDataDoubleEscapedState,
