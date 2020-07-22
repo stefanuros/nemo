@@ -127,6 +127,7 @@ fn tokenize(
     DataState::ScriptDataEscapedEndTagOpenState => state_transitions::script_data_escaped_end_tag_open_state_transition(c, current_state, current_token),
     DataState::ScriptDataEscapedEndTagNameState => state_transitions::script_data_escaped_end_tag_name_state_transition(c, current_state, current_token, temporary_buffer, recent_start_tag),
     DataState::ScriptDataDoubleEscapeStartState => state_transitions::script_data_double_escape_start_state_transition(c, current_state, temporary_buffer),
+    DataState::ScriptDataDoubleEscapedState => state_transitions::script_data_double_escaped_state_transition(c, current_state),
     _ => (None, false),
   }
 }
