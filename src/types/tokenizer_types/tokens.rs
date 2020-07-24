@@ -4,6 +4,8 @@ use std::fmt::{
   Result
 };
 
+use super::token_types::TagToken ;
+
 #[derive(Debug, PartialEq, Clone)]
 pub enum Token {
   CharacterToken(char),
