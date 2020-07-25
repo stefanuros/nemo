@@ -8,10 +8,19 @@ use std::fmt::{
 pub struct Attribute {
   name: String,
   value: String,
+  /// A boolean value which states whether the attribute is a duplicate or not
   duplicate: bool
 }
 
 impl Attribute {
+  /// Creates an attribute with a char as the starting name. Everything else is default
+  pub fn new(c: char) -> Attribute {
+    return Attribute {
+      name: c.to_string(),
+      ..Attribute::default()
+    };
+  }
+
   pub fn get_name (&self) -> String {
     return self.name.clone();
   }
@@ -20,6 +29,7 @@ impl Attribute {
     self.name = new_name;
   }
 
+  /// Pushes a character to add to the attribute name
   pub fn push_to_name (&mut self, c: char) {
     self.name.push(c);
   }
@@ -32,20 +42,24 @@ impl Attribute {
     self.value = new_value;
   }
 
+  /// Pushes a character to add to the attributes value
   pub fn push_to_value (&mut self, c: char) {
     self.value.push(c);
   }
 
+  /// Returns the duplicate boolean stating whether the attribute is a duplicate or not
   pub fn is_duplicate(&self) -> bool {
     return self.duplicate;
   }
 
+  /// Sets the attribute duplicate value
   pub fn set_duplicate(&mut self, duplicate_value: bool) {
     self.duplicate = duplicate_value;
   }
 }
 
 impl Default for Attribute {
+  /// Creates a new Attribute with all default values
   fn default() -> Attribute {
     return Attribute {
       name: "".to_string(),

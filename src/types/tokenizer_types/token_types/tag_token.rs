@@ -8,12 +8,15 @@ use super::Attribute;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct TagToken {
+  /// The list of attributes associated with this tag
+  /// The last attribute in the list is the current_attribute
   pub attributes: Vec<Attribute>,
+  /// The name of the tag
   pub tag_name: String
 }
 
 impl TagToken {
-  // Create a new TagToken with a string as the tag name
+  /// Create a new TagToken with a string as the tag name
   pub fn new(s: &str) -> TagToken {
     return TagToken {
       attributes: vec![],
@@ -21,29 +24,41 @@ impl TagToken {
     };
   }
 
-  // Sets the tag name with a given string
+  fn get_tag_name (&self) -> String {
+    return self.tag_name.clone();
+  }
+
   fn set_tag_name (&mut self, new_tag_name: String) {
     self.tag_name = new_tag_name;
   }
 
-  // Pushes a char to the tag name
+  /// Pushes a char to the tag name
   pub fn push_to_tag_name (&mut self, c: char) {
     self.tag_name.push(c);
   }
 
-  // Returns the current attribute
+  /// Returns the current attribute (the last attribute in the list or None if the
+  /// the list of attributes is empty)
   fn get_current_attribute (&mut self) -> Option<&mut Attribute> {
     return self.attributes.last_mut();
   }
 
-  // Creates a new default attribute, adds it to the list, and returns a mutable reference to it
-  fn add_new_attribute(&mut self) -> Option<&mut Attribute> {
+  /// Creates a new default attribute, adds it to the list, and returns a mutable reference to it
+  pub fn add_default_attribute(&mut self) -> &mut Attribute {
     self.attributes.push(Attribute::default());
 
-    return self.get_current_attribute();
+    return self.get_current_attribute().unwrap();
   }
 
-  // Sets the is_duplicate value for the current attribute
+  /// Creates a new attribute with a specific character as the start of the attribute name.
+  /// Returns a mutable reference to the newly created attribute
+  pub fn add_new_attribute(&mut self, c: char) -> &mut Attribute {
+    self.attributes.push(Attribute::new(c));
+
+    return self.get_current_attribute().unwrap();
+  }
+
+  /// Sets the is_duplicate value for the current attribute
   fn update_current_attribute_duplicate_flag(&mut self) -> bool {
 
     let current_attribute_name = match self.get_current_attribute() {
@@ -70,6 +85,7 @@ impl TagToken {
 }
 
 impl Default for TagToken {
+  /// Creates a new TagToken with all default values
   fn default() -> TagToken {
     return TagToken {
       attributes: vec![],
