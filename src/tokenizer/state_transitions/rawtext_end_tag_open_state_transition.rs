@@ -1,5 +1,8 @@
-use crate::types::tokenizer_types::data_states::DataState;
-use crate::types::tokenizer_types::tokens::Token;
+use crate::types::tokenizer_types::{
+  data_states::DataState,
+  tokens::Token,
+  token_types::TagToken
+};
 
 pub fn rawtext_end_tag_open_state_transition(
   c: Option<char>, 
@@ -21,7 +24,7 @@ fn rawtext_end_tag_open_state_transition_ascii_alpha(
 ) -> (Option<Vec<Token>>, bool) {
   println!("RAWTEXT End Tag Open State Solidus: '{:?}'", c);
 
-  *current_token = Some(Token::EndTagToken("".to_string()));
+  *current_token = Some(Token::EndTagToken(TagToken::default()));
   *current_state = DataState::RAWTEXTEndTagNameState;
 
   return (None, true);
@@ -63,7 +66,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::RAWTEXTEndTagNameState, current_state);
-    assert_eq!(Some(Token::EndTagToken("".to_string())), current_token);
+    assert_eq!(Some(Token::EndTagToken(TagToken::default())), current_token);
   }
 
   #[test]
