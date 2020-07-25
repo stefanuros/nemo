@@ -1,5 +1,7 @@
-use crate::types::tokenizer_types::data_states::DataState;
-use crate::types::tokenizer_types::tokens::Token;
+use crate::types::tokenizer_types::{
+  data_states::DataState,
+  tokens::Token
+};
 
 pub fn script_data_escaped_end_tag_name_state_transition(
   c: Option<char>, 
@@ -96,8 +98,8 @@ fn script_data_escaped_end_tag_name_state_transition_ascii_upper_alpha(
   println!("Script Data Escaped End Tag Name State Ascii Upper Alpha: '{:?}'", c);
 
   // Add to the current tag token value
-  if let Some(Token::StartTagToken(ref mut tag_name)) | Some(Token::EndTagToken(ref mut tag_name)) = current_token {
-    tag_name.push(c.unwrap().to_ascii_lowercase());
+  if let Some(Token::StartTagToken(ref mut tag_token)) | Some(Token::EndTagToken(ref mut tag_token)) = current_token {
+    tag_token.push_to_tag_name(c.unwrap().to_ascii_lowercase());
   }
 
   temporary_buffer.push(c.unwrap());
@@ -113,8 +115,8 @@ fn script_data_escaped_end_tag_name_state_transition_ascii_lower_alpha(
   println!("Script Data Escaped End Tag Name State Ascii Lower Alpha: '{:?}'", c);
 
   // Add to the current tag token value
-  if let Some(Token::StartTagToken(ref mut tag_name)) | Some(Token::EndTagToken(ref mut tag_name)) = current_token {
-    tag_name.push(c.unwrap());
+  if let Some(Token::StartTagToken(ref mut tag_token)) | Some(Token::EndTagToken(ref mut tag_token)) = current_token {
+    tag_token.push_to_tag_name(c.unwrap());
   }
 
   temporary_buffer.push(c.unwrap());
@@ -147,14 +149,15 @@ fn script_data_escaped_end_tag_name_state_transition_anything_else(
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::types::tokenizer_types::token_types::TagToken;
 
   #[test]
   fn test_script_data_escaped_end_tag_name_state_transition_whitespace_appropriate() {
     const C: Option<char> = Some('\t');
     let mut current_state: DataState = DataState::ScriptDataEscapedEndTagNameState;
-    let mut current_token: Option<Token> = Some(Token::EndTagToken("div".to_string()));
+    let mut current_token: Option<Token> = Some(Token::EndTagToken(TagToken::new("div")));
     let mut temporary_buffer = "div".to_string();
-    let recent_start_tag = Some(Token::StartTagToken("div".to_string()));
+    let recent_start_tag = Some(Token::StartTagToken(TagToken::new("div")));
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = script_data_escaped_end_tag_name_state_transition(
@@ -167,7 +170,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::BeforeAttributeNameState, current_state);
-    assert_eq!(Some(Token::EndTagToken("div".to_string())), current_token);
+    assert_eq!(Some(Token::EndTagToken(TagToken::new("div"))), current_token);
     assert_eq!("div".to_string(), temporary_buffer);
   }
 
@@ -175,9 +178,9 @@ mod tests {
   fn test_script_data_escaped_end_tag_name_state_transition_whitespace_incorrect_token() {
     const C: Option<char> = Some('\t');
     let mut current_state: DataState = DataState::ScriptDataEscapedEndTagNameState;
-    let mut current_token: Option<Token> = Some(Token::StartTagToken("div".to_string()));
+    let mut current_token: Option<Token> = Some(Token::StartTagToken(TagToken::new("div")));
     let mut temporary_buffer = "div".to_string();
-    let recent_start_tag = Some(Token::StartTagToken("div".to_string()));
+    let recent_start_tag = Some(Token::StartTagToken(TagToken::new("div")));
 
     let expected: (Option<Vec<Token>>, bool) = (
       Some(vec![
@@ -199,7 +202,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::ScriptDataEscapedState, current_state);
-    assert_eq!(Some(Token::StartTagToken("div".to_string())), current_token);
+    assert_eq!(Some(Token::StartTagToken(TagToken::new("div"))), current_token);
     assert_eq!("div".to_string(), temporary_buffer);
   }
 
@@ -207,9 +210,9 @@ mod tests {
   fn test_script_data_escaped_end_tag_name_state_transition_whitespace_incorrect_tag_value() {
     const C: Option<char> = Some('\t');
     let mut current_state: DataState = DataState::ScriptDataEscapedEndTagNameState;
-    let mut current_token: Option<Token> = Some(Token::EndTagToken("div1".to_string()));
+    let mut current_token: Option<Token> = Some(Token::EndTagToken(TagToken::new("div1")));
     let mut temporary_buffer = "div".to_string();
-    let recent_start_tag = Some(Token::StartTagToken("div".to_string()));
+    let recent_start_tag = Some(Token::StartTagToken(TagToken::new("div")));
 
     let expected: (Option<Vec<Token>>, bool) = (
       Some(vec![
@@ -231,7 +234,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::ScriptDataEscapedState, current_state);
-    assert_eq!(Some(Token::EndTagToken("div1".to_string())), current_token);
+    assert_eq!(Some(Token::EndTagToken(TagToken::new("div1"))), current_token);
     assert_eq!("div".to_string(), temporary_buffer);
   }
 
@@ -239,9 +242,9 @@ mod tests {
   fn test_script_data_escaped_end_tag_name_state_transition_solidus() {
     const C: Option<char> = Some('/');
     let mut current_state: DataState = DataState::ScriptDataEscapedEndTagNameState;
-    let mut current_token: Option<Token> = Some(Token::EndTagToken("div".to_string()));
+    let mut current_token: Option<Token> = Some(Token::EndTagToken(TagToken::new("div")));
     let mut temporary_buffer = "div".to_string();
-    let recent_start_tag = Some(Token::StartTagToken("div".to_string()));
+    let recent_start_tag = Some(Token::StartTagToken(TagToken::new("div")));
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = script_data_escaped_end_tag_name_state_transition(
@@ -254,7 +257,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::SelfClosingStartTagState, current_state);
-    assert_eq!(Some(Token::EndTagToken("div".to_string())), current_token);
+    assert_eq!(Some(Token::EndTagToken(TagToken::new("div"))), current_token);
     assert_eq!("div".to_string(), temporary_buffer);
   }
 
@@ -262,13 +265,13 @@ mod tests {
   fn test_script_data_escaped_end_tag_name_state_transition_greater_than_sign() {
     const C: Option<char> = Some('>');
     let mut current_state: DataState = DataState::ScriptDataEscapedEndTagNameState;
-    let mut current_token: Option<Token> = Some(Token::EndTagToken("div".to_string()));
+    let mut current_token: Option<Token> = Some(Token::EndTagToken(TagToken::new("div")));
     let mut temporary_buffer = "div".to_string();
-    let recent_start_tag = Some(Token::StartTagToken("div".to_string()));
+    let recent_start_tag = Some(Token::StartTagToken(TagToken::new("div")));
 
     let expected: (Option<Vec<Token>>, bool) = (
       Some(vec![
-        Token::EndTagToken("div".to_string())
+        Token::EndTagToken(TagToken::new("div"))
       ]), 
       false
     );
@@ -282,7 +285,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::DataState, current_state);
-    assert_eq!(Some(Token::EndTagToken("div".to_string())), current_token);
+    assert_eq!(Some(Token::EndTagToken(TagToken::new("div"))), current_token);
     assert_eq!("div".to_string(), temporary_buffer);
   }
 
@@ -290,9 +293,9 @@ mod tests {
   fn test_script_data_escaped_end_tag_name_state_transition_ascii_upper_alpha() {
     const C: Option<char> = Some('A');
     let mut current_state: DataState = DataState::ScriptDataEscapedEndTagNameState;
-    let mut current_token: Option<Token> = Some(Token::EndTagToken("div".to_string()));
+    let mut current_token: Option<Token> = Some(Token::EndTagToken(TagToken::new("div")));
     let mut temporary_buffer = "div".to_string();
-    let recent_start_tag = Some(Token::StartTagToken("".to_string()));
+    let recent_start_tag = Some(Token::StartTagToken(TagToken::default()));
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = script_data_escaped_end_tag_name_state_transition(
@@ -305,7 +308,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::ScriptDataEscapedEndTagNameState, current_state);
-    assert_eq!(Some(Token::EndTagToken("diva".to_string())), current_token);
+    assert_eq!(Some(Token::EndTagToken(TagToken::new("diva"))), current_token);
     assert_eq!("divA".to_string(), temporary_buffer);
   }
 
@@ -313,9 +316,9 @@ mod tests {
   fn test_script_data_escaped_end_tag_name_state_transition_ascii_lower_alpha() {
     const C: Option<char> = Some('a');
     let mut current_state: DataState = DataState::ScriptDataEscapedEndTagNameState;
-    let mut current_token: Option<Token> = Some(Token::EndTagToken("div".to_string()));
+    let mut current_token: Option<Token> = Some(Token::EndTagToken(TagToken::new("div")));
     let mut temporary_buffer = "div".to_string();
-    let recent_start_tag = Some(Token::StartTagToken("".to_string()));
+    let recent_start_tag = Some(Token::StartTagToken(TagToken::default()));
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = script_data_escaped_end_tag_name_state_transition(
@@ -328,7 +331,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::ScriptDataEscapedEndTagNameState, current_state);
-    assert_eq!(Some(Token::EndTagToken("diva".to_string())), current_token);
+    assert_eq!(Some(Token::EndTagToken(TagToken::new("diva"))), current_token);
     assert_eq!("diva".to_string(), temporary_buffer);
   }
 
@@ -336,9 +339,9 @@ mod tests {
   fn test_script_data_escaped_end_tag_name_state_transition_anything_else() {
     const C: Option<char> = Some('7');
     let mut current_state: DataState = DataState::RCDATAEndTagNameState;
-    let mut current_token: Option<Token> = Some(Token::EndTagToken("div".to_string()));
+    let mut current_token: Option<Token> = Some(Token::EndTagToken(TagToken::new("div")));
     let mut temporary_buffer = "div".to_string();
-    let recent_start_tag = Some(Token::StartTagToken("div".to_string()));
+    let recent_start_tag = Some(Token::StartTagToken(TagToken::new("div")));
 
     let expected: (Option<Vec<Token>>, bool) = (
       Some(vec![
@@ -360,7 +363,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::ScriptDataEscapedState, current_state);
-    assert_eq!(Some(Token::EndTagToken("div".to_string())), current_token);
+    assert_eq!(Some(Token::EndTagToken(TagToken::new("div"))), current_token);
     assert_eq!("div".to_string(), temporary_buffer);
   }
 }

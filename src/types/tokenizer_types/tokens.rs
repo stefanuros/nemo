@@ -11,9 +11,9 @@ pub enum Token {
   CharacterToken(char),
   CommentToken(String),
   DOCTYPE(),
-  EndTagToken(String),
+  EndTagToken(TagToken),
   EOFToken,
-  StartTagToken(String),
+  StartTagToken(TagToken),
 }
 
 impl Display for Token {

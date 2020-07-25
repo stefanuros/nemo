@@ -1,18 +1,33 @@
+use std::fmt::{
+  Display,
+  Formatter,
+  Result
+};
+
 use super::Attribute;
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct TagToken {
-  attributes: Vec<Attribute>,
-  tag_name: String
+  pub attributes: Vec<Attribute>,
+  pub tag_name: String
 }
 
 impl TagToken {
+  // Create a new TagToken with a string as the tag name
+  pub fn new(s: &str) -> TagToken {
+    return TagToken {
+      attributes: vec![],
+      tag_name: s.to_string()
+    };
+  }
+
   // Sets the tag name with a given string
   fn set_tag_name (&mut self, new_tag_name: String) {
     self.tag_name = new_tag_name;
   }
 
   // Pushes a char to the tag name
-  fn push_to_tag_name (&mut self, c: char) {
+  pub fn push_to_tag_name (&mut self, c: char) {
     self.tag_name.push(c);
   }
 
@@ -60,5 +75,11 @@ impl Default for TagToken {
       attributes: vec![],
       tag_name: "".to_string()
     };
+  }
+}
+
+impl Display for TagToken {
+  fn fmt(&self, f: &mut Formatter) -> Result {
+    write!(f, "{:?}", self)
   }
 }
