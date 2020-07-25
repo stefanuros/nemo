@@ -1,5 +1,8 @@
-use crate::types::tokenizer_types::data_states::DataState;
-use crate::types::tokenizer_types::tokens::Token;
+use crate::types::tokenizer_types::{
+  data_states::DataState,
+  tokens::Token,
+  token_types::TagToken
+};
 
 pub fn rcdata_end_tag_open_state_transition(
   c: Option<char>, 
@@ -21,7 +24,7 @@ fn rcdata_end_tag_open_state_transition_ascii_alpha(
 ) -> (Option<Vec<Token>>, bool) {
   println!("RCDATA End Tag Open State Ascii Alpha: '{:?}'", c);
 
-  *current_token = Some(Token::EndTagToken("".to_string()));
+  *current_token = Some(Token::EndTagToken(TagToken::default()));
   *current_state = DataState::RCDATAEndTagNameState;
   
   return (None, true);
@@ -52,14 +55,14 @@ mod tests {
   fn test_rcdata_end_tag_open_state_transition_ascii_alpha() {
     const C: Option<char> = Some('D');
     let mut current_state: DataState = DataState::RCDATAEndTagOpenState;
-    let mut current_token: Option<Token> = Some(Token::StartTagToken("g".to_string()));
+    let mut current_token: Option<Token> = Some(Token::StartTagToken(TagToken::new("g")));
 
     let expected: (Option<Vec<Token>>, bool) = (None, true);
     let result = rcdata_end_tag_open_state_transition(C, &mut current_state, &mut current_token);
 
     assert_eq!(expected, result);
     assert_eq!(DataState::RCDATAEndTagNameState, current_state);
-    assert_eq!(Some(Token::EndTagToken("".to_string())), current_token);
+    assert_eq!(Some(Token::EndTagToken(TagToken::default())), current_token);
   }
 
   #[test]

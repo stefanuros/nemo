@@ -3,8 +3,11 @@ use crate::errors::tokenizer_errors::{
   eof_before_tag_name_parse_error,
   invalid_first_character_of_tag_name_parse_error
 };
-use crate::types::tokenizer_types::data_states::DataState;
-use crate::types::tokenizer_types::tokens::Token;
+use crate::types::tokenizer_types::{
+  data_states::DataState,
+  tokens::Token,
+  token_types::TagToken
+};
 
 pub fn end_tag_open_state_transition(
   c: Option<char>, 
@@ -29,7 +32,7 @@ fn end_tag_open_state_transition_ascii_alpha(
   println!("End Tag Open State Ascii Alpha: '{:?}'", c);
 
   *current_state = DataState::TagNameState;
-  *current_token = Some(Token::EndTagToken("".to_string()));
+  *current_token = Some(Token::EndTagToken(TagToken::default()));
   
   return(None, true);
 }
@@ -95,7 +98,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::TagNameState, current_state);
-    assert_eq!(Some(Token::EndTagToken("".to_string())), current_token);
+    assert_eq!(Some(Token::EndTagToken(TagToken::default())), current_token);
   }
 
   #[test]
