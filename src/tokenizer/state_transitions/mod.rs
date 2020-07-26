@@ -1,3 +1,4 @@
+mod attribute_name_state_transition;
 mod before_attribute_name_state_transition;
 mod data_state_transition;
 mod end_tag_open_state_transition;
@@ -31,6 +32,7 @@ mod script_data_state_transition;
 mod tag_name_state_transition;
 mod tag_open_state_transition;
 
+pub use attribute_name_state_transition::attribute_name_state_transition;
 pub use before_attribute_name_state_transition::before_attribute_name_state_transition;
 pub use data_state_transition::data_state_transition;
 pub use end_tag_open_state_transition::end_tag_open_state_transition;

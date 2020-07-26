@@ -43,6 +43,20 @@ impl TagToken {
     return self.attributes.last_mut();
   }
 
+  /// Pushes a character to the name of the current attribute
+  pub fn push_to_current_attribute_name (&mut self, c: char) {
+    if let Some(attr) = self.get_current_attribute() {
+      attr.push_to_name(c);
+    }
+  }
+
+  /// Pushes a character to the value of the current attribute
+  pub fn push_to_current_attribute_value (&mut self, c: char) {
+    if let Some(attr) = self.get_current_attribute() {
+      attr.push_to_value(c);
+    }
+  }
+
   /// Creates a new default attribute, adds it to the list, and returns a mutable reference to it
   pub fn add_default_attribute(&mut self) -> &mut Attribute {
     self.attributes.push(Attribute::default());
@@ -59,7 +73,7 @@ impl TagToken {
   }
 
   /// Sets the is_duplicate value for the current attribute
-  fn update_current_attribute_duplicate_flag(&mut self) -> bool {
+  pub fn update_current_attribute_duplicate_flag(&mut self) -> bool {
 
     let current_attribute_name = match self.get_current_attribute() {
       Some(current_attribute) => current_attribute.get_name(),

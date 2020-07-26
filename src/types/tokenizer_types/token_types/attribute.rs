@@ -6,10 +6,10 @@ use std::fmt::{
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Attribute {
-  name: String,
-  value: String,
+  pub name: String,
+  pub value: String,
   /// A boolean value which states whether the attribute is a duplicate or not
-  duplicate: bool
+  pub duplicate: bool
 }
 
 impl Attribute {
