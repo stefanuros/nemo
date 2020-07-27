@@ -36,7 +36,7 @@ fn attribute_name_state_transition_end_of_attribute_name(
   current_state: &mut DataState,
   current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Attribute Name State Exclamation Mark: '{:?}'", c);
+  println!("Attribute Name State End Of Attribute Name: '{:?}'", c);
 
   *current_state = DataState::AfterAttributeNameState;
 
@@ -91,7 +91,7 @@ fn attribute_name_state_transition_unexpected_character(
   c: Option<char>,
   current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Attribute Name State Anything Else: '{:?}'", c);
+  println!("Attribute Name State Unexpected Character: '{:?}'", c);
 
   unexpected_character_before_attribute_name_parse_error::error(DataState::AttributeNameState.to_string(), c.unwrap());
 

@@ -134,6 +134,7 @@ fn tokenize(
     DataState::ScriptDataDoubleEscapeEndState => state_transitions::script_data_double_escape_end_state_transition(c, current_state, temporary_buffer),
     DataState::BeforeAttributeNameState => state_transitions::before_attribute_name_state_transition(c, current_state, current_token),
     DataState::AttributeNameState => state_transitions::attribute_name_state_transition(c, current_state, current_token),
+    DataState::AfterAttributeNameState => state_transitions::after_attribute_name_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }
