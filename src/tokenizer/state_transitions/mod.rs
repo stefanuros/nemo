@@ -1,6 +1,7 @@
 mod after_attribute_name_state_transition;
 mod attribute_name_state_transition;
 mod before_attribute_name_state_transition;
+mod before_attribute_value_state_transition;
 mod data_state_transition;
 mod end_tag_open_state_transition;
 mod plaintext_state_transition;
@@ -36,6 +37,7 @@ mod tag_open_state_transition;
 pub use after_attribute_name_state_transition::after_attribute_name_state_transition;
 pub use attribute_name_state_transition::attribute_name_state_transition;
 pub use before_attribute_name_state_transition::before_attribute_name_state_transition;
+pub use before_attribute_value_state_transition::before_attribute_value_state_transition;
 pub use data_state_transition::data_state_transition;
 pub use end_tag_open_state_transition::end_tag_open_state_transition;
 pub use plaintext_state_transition::plaintext_state_transition;
@@ -67,4 +69,3 @@ pub use script_data_less_than_sign_state_transition::script_data_less_than_sign_
 pub use script_data_state_transition::script_data_state_transition;
 pub use tag_name_state_transition::tag_name_state_transition;
 pub use tag_open_state_transition::tag_open_state_transition;
-pub use after_attribute_name_state_transition::after_attribute_name_state_transition;

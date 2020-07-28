@@ -135,6 +135,7 @@ fn tokenize(
     DataState::BeforeAttributeNameState => state_transitions::before_attribute_name_state_transition(c, current_state, current_token),
     DataState::AttributeNameState => state_transitions::attribute_name_state_transition(c, current_state, current_token),
     DataState::AfterAttributeNameState => state_transitions::after_attribute_name_state_transition(c, current_state, current_token),
+    DataState::BeforeAttributeValueState => state_transitions::before_attribute_value_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }
