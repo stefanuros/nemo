@@ -28,7 +28,7 @@ fn attribute_value_single_quoted_state_transition_quotation_mark(
 ) -> (Option<Vec<Token>>, bool) {
   println!("Attribute Value Single Quoted State Quotation Mark: '{:?}'", c);
 
-  *current_state = DataState::AfterAttributeQuotedState;
+  *current_state = DataState::AfterAttributeValueQuotedState;
 
   return (None, false);
 }
@@ -139,7 +139,7 @@ mod tests {
     );
 
     assert_eq!(expected, result);
-    assert_eq!(DataState::AfterAttributeQuotedState, current_state);
+    assert_eq!(DataState::AfterAttributeValueQuotedState, current_state);
     assert_eq!(DataState::DataState, return_state);
     assert_eq!(expected_current_token, current_token);
   }

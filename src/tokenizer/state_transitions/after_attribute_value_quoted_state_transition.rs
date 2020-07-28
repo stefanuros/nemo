@@ -1,72 +1,74 @@
 use crate::errors::tokenizer_errors::{
-  unexpected_null_character_parse_error,
-  eof_in_tag_parse_error
+  eof_in_tag_parse_error,
+  missed_whitespace_between_attributes_parse_error
 };
 use crate::types::tokenizer_types::data_states::DataState;
 use crate::types::tokenizer_types::tokens::Token;
 
-pub fn attribute_value_double_quoted_state_transition(
+pub fn after_attribute_value_quoted_state_transition(
   c: Option<char>, 
   current_state: &mut DataState,
-  return_state: &mut DataState,
   current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Attribute Value Double Quoted State c: '{:?}'", c);
+  println!("After Attribute Value Quoted State c: '{:?}'", c);
 
   return match c {
-    Some('\u{0022}') => attribute_value_double_quoted_state_transition_quotation_mark(c, current_state),
-    Some('\u{0026}') => attribute_value_double_quoted_state_transition_ampersand(c, current_state, return_state),
-    Some('\u{0000}') => attribute_value_double_quoted_state_transition_null(c, current_token),
-    None => attribute_value_double_quoted_state_transition_eof(c),
-    _ => attribute_value_double_quoted_state_transition_anything_else(c, current_token)
+    Some('\u{0009}') |
+    Some('\u{000A}') |
+    Some('\u{000C}') |
+    Some('\u{0020}') => after_attribute_value_quoted_state_transition_whitespace(c, current_state),
+    Some('\u{002F}') => after_attribute_value_quoted_state_transition_solidus(c, current_state),
+    Some('\u{003E}') => after_attribute_value_quoted_state_transition_greater_than_sign(c, current_state, current_token),
+    None => after_attribute_value_quoted_state_transition_eof(c),
+    _ => after_attribute_value_quoted_state_transition_anything_else(c, current_state)
   }
 }
 
-fn attribute_value_double_quoted_state_transition_quotation_mark(
+fn after_attribute_value_quoted_state_transition_whitespace(
   c: Option<char>,
   current_state: &mut DataState
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Attribute Value Double Quoted State Quotation Mark: '{:?}'", c);
+  println!("After Attribute Value Quoted State Whitespace: '{:?}'", c);
 
-  *current_state = DataState::AfterAttributeValueQuotedState;
+  *current_state = DataState::BeforeAttributeNameState;
 
   return (None, false);
 }
 
-fn attribute_value_double_quoted_state_transition_ampersand(
+fn after_attribute_value_quoted_state_transition_solidus(
+  c: Option<char>,
+  current_state: &mut DataState
+) -> (Option<Vec<Token>>, bool) {
+  println!("After Attribute Value Quoted State Solidus: '{:?}'", c);
+
+  *current_state = DataState::SelfClosingStartTagState;
+
+  return (None, false);
+}
+
+fn after_attribute_value_quoted_state_transition_greater_than_sign(
   c: Option<char>,
   current_state: &mut DataState,
-  return_state: &mut DataState
-) -> (Option<Vec<Token>>, bool) {
-  println!("Attribute Value Double Quoted State Ampersand: '{:?}'", c);
-
-  *return_state = DataState::AttributeValueDoubleQuotedState;
-  *current_state = DataState::CharacterReferenceState;
-
-  return (None, false);
-}
-
-fn attribute_value_double_quoted_state_transition_null(
-  c: Option<char>,
   current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Attribute Value Double Quoted State Null: '{:?}'", c);
+  println!("After Attribute Value Quoted State Greater Than Sign: '{:?}'", c);
 
-  unexpected_null_character_parse_error::error(DataState::AttributeValueDoubleQuotedState.to_string(), c.unwrap());
+  *current_state = DataState::DataState;
 
-  if let Some(Token::StartTagToken(ref mut tag_token)) | Some(Token::EndTagToken(ref mut tag_token)) = current_token {
-    tag_token.push_to_current_attribute_value('\u{FFFD}');
-  }
-
-  return (None, false);
+  return (
+    Some(vec![
+      current_token.clone().unwrap()
+    ]), 
+    false
+  );
 }
 
-fn attribute_value_double_quoted_state_transition_eof(
+fn after_attribute_value_quoted_state_transition_eof(
   c: Option<char>
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Attribute Value Double Quoted State Null: '{:?}'", c);
+  println!("After Attribute Value Quoted State EOF: '{:?}'", c);
 
-  eof_in_tag_parse_error::error(DataState::AttributeValueDoubleQuotedState.to_string());
+  eof_in_tag_parse_error::error(DataState::AfterAttributeValueQuotedState.to_string());
 
   return (
     Some(vec![
@@ -76,17 +78,17 @@ fn attribute_value_double_quoted_state_transition_eof(
   );
 }
 
-fn attribute_value_double_quoted_state_transition_anything_else(
+fn after_attribute_value_quoted_state_transition_anything_else(
   c: Option<char>,
-  current_token: &mut Option<Token>
+  current_state: &mut DataState
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Attribute Value Double Quoted State Anything Else: '{:?}'", c);
+  println!("After Attribute Value Quoted State Anything Else: '{:?}'", c);
 
-  if let Some(Token::StartTagToken(ref mut tag_token)) | Some(Token::EndTagToken(ref mut tag_token)) = current_token {
-    tag_token.push_to_current_attribute_value(c.unwrap());
-  }
+  missed_whitespace_between_attributes_parse_error::error(DataState::AfterAttributeValueQuotedState.to_string(), c.unwrap());
 
-  return(None, false);
+  *current_state = DataState::BeforeAttributeNameState;
+
+  return(None, true);
 }
 
 #[cfg(test)]
@@ -98,10 +100,9 @@ mod tests {
   };
 
   #[test]
-  fn test_attribute_value_double_quoted_state_transition_quotation_mark() {
-    const C: Option<char> = Some('\"');
-    let mut current_state: DataState = DataState::AttributeValueDoubleQuotedState;
-    let mut return_state: DataState = DataState::DataState;
+  fn test_after_attribute_value_quoted_state_transition_whitespace() {
+    const C: Option<char> = Some('\u{000C}');
+    let mut current_state: DataState = DataState::AfterAttributeValueQuotedState;
     let mut current_token: Option<Token> = Some(
       Token::StartTagToken(
         TagToken {
@@ -131,24 +132,21 @@ mod tests {
     );
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
-    let result = attribute_value_double_quoted_state_transition(
+    let result = after_attribute_value_quoted_state_transition(
       C, 
       &mut current_state,
-      &mut return_state,
       &mut current_token
     );
 
     assert_eq!(expected, result);
-    assert_eq!(DataState::AfterAttributeValueQuotedState, current_state);
-    assert_eq!(DataState::DataState, return_state);
+    assert_eq!(DataState::BeforeAttributeNameState, current_state);
     assert_eq!(expected_current_token, current_token);
   }
 
   #[test]
-  fn test_attribute_value_double_quoted_state_transition_ampersand() {
-    const C: Option<char> = Some('&');
-    let mut current_state: DataState = DataState::AttributeValueDoubleQuotedState;
-    let mut return_state: DataState = DataState::DataState;
+  fn test_after_attribute_value_quoted_state_transition_solidus() {
+    const C: Option<char> = Some('/');
+    let mut current_state: DataState = DataState::AfterAttributeValueQuotedState;
     let mut current_token: Option<Token> = Some(
       Token::StartTagToken(
         TagToken {
@@ -178,24 +176,21 @@ mod tests {
     );
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
-    let result = attribute_value_double_quoted_state_transition(
+    let result = after_attribute_value_quoted_state_transition(
       C, 
       &mut current_state,
-      &mut return_state,
       &mut current_token
     );
 
     assert_eq!(expected, result);
-    assert_eq!(DataState::CharacterReferenceState, current_state);
-    assert_eq!(DataState::AttributeValueDoubleQuotedState, return_state);
+    assert_eq!(DataState::SelfClosingStartTagState, current_state);
     assert_eq!(expected_current_token, current_token);
   }
 
   #[test]
-  fn test_attribute_value_double_quoted_state_transition_null() {
-    const C: Option<char> = Some('\0');
-    let mut current_state: DataState = DataState::AttributeValueDoubleQuotedState;
-    let mut return_state: DataState = DataState::DataState;
+  fn test_after_attribute_value_quoted_state_transition_greater_than_sign() {
+    const C: Option<char> = Some('>');
+    let mut current_state: DataState = DataState::AfterAttributeValueQuotedState;
     let mut current_token: Option<Token> = Some(
       Token::StartTagToken(
         TagToken {
@@ -216,7 +211,6 @@ mod tests {
           attributes: vec![
             Attribute {
               name: "abc".to_string(),
-              value: "�".to_string(),
               ..Attribute::default()
             }
           ],
@@ -225,25 +219,27 @@ mod tests {
       )
     );
 
-    let expected: (Option<Vec<Token>>, bool) = (None, false);
-    let result = attribute_value_double_quoted_state_transition(
+    let expected: (Option<Vec<Token>>, bool) = (
+      Some(vec![
+        expected_current_token.clone().unwrap()
+      ]), 
+      false
+    );
+    let result = after_attribute_value_quoted_state_transition(
       C, 
       &mut current_state,
-      &mut return_state,
       &mut current_token
     );
 
     assert_eq!(expected, result);
-    assert_eq!(DataState::AttributeValueDoubleQuotedState, current_state);
-    assert_eq!(DataState::DataState, return_state);
+    assert_eq!(DataState::DataState, current_state);
     assert_eq!(expected_current_token, current_token);
   }
 
   #[test]
-  fn test_attribute_value_double_quoted_state_transition_eof() {
+  fn test_after_attribute_value_quoted_state_transition_eof() {
     const C: Option<char> = None;
-    let mut current_state: DataState = DataState::AttributeValueDoubleQuotedState;
-    let mut return_state: DataState = DataState::DataState;
+    let mut current_state: DataState = DataState::AfterAttributeValueQuotedState;
     let mut current_token: Option<Token> = Some(
       Token::StartTagToken(
         TagToken {
@@ -273,24 +269,21 @@ mod tests {
     );
 
     let expected: (Option<Vec<Token>>, bool) = (Some(vec![Token::EOFToken]), false);
-    let result = attribute_value_double_quoted_state_transition(
+    let result = after_attribute_value_quoted_state_transition(
       C, 
       &mut current_state,
-      &mut return_state,
       &mut current_token
     );
 
     assert_eq!(expected, result);
-    assert_eq!(DataState::AttributeValueDoubleQuotedState, current_state);
-    assert_eq!(DataState::DataState, return_state);
+    assert_eq!(DataState::AfterAttributeValueQuotedState, current_state);
     assert_eq!(expected_current_token, current_token);
   }
 
   #[test]
-  fn test_attribute_value_double_quoted_state_transition_anything_else() {
+  fn test_after_attribute_value_quoted_state_transition_anything_else() {
     const C: Option<char> = Some('6');
-    let mut current_state: DataState = DataState::AttributeValueDoubleQuotedState;
-    let mut return_state: DataState = DataState::DataState;
+    let mut current_state: DataState = DataState::AfterAttributeValueQuotedState;
     let mut current_token: Option<Token> = Some(
       Token::StartTagToken(
         TagToken {
@@ -311,7 +304,6 @@ mod tests {
           attributes: vec![
             Attribute {
               name: "abc".to_string(),
-              value: "6".to_string(),
               ..Attribute::default()
             }
           ],
@@ -320,17 +312,15 @@ mod tests {
       )
     );
 
-    let expected: (Option<Vec<Token>>, bool) = (None, false);
-    let result = attribute_value_double_quoted_state_transition(
+    let expected: (Option<Vec<Token>>, bool) = (None, true);
+    let result = after_attribute_value_quoted_state_transition(
       C, 
       &mut current_state,
-      &mut return_state,
       &mut current_token
     );
 
     assert_eq!(expected, result);
-    assert_eq!(DataState::AttributeValueDoubleQuotedState, current_state);
-    assert_eq!(DataState::DataState, return_state);
+    assert_eq!(DataState::BeforeAttributeNameState, current_state);
     assert_eq!(expected_current_token, current_token);
   }
 }

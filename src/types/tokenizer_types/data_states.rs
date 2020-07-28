@@ -7,7 +7,7 @@ use std::fmt::{
 #[derive(Debug, PartialEq)]
 pub enum DataState {
   AfterAttributeNameState,
-  AfterAttributeQuotedState,
+  AfterAttributeValueQuotedState,
   AfterDOCTYPENameState,
   AfterDOCTYPEPublicIdentifierState,
   AfterDOCTYPEPublicKeywordState,
