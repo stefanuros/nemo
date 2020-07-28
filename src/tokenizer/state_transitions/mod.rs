@@ -1,5 +1,6 @@
 mod after_attribute_name_state_transition;
 mod attribute_name_state_transition;
+mod attribute_value_double_quoted_state_transition;
 mod before_attribute_name_state_transition;
 mod before_attribute_value_state_transition;
 mod data_state_transition;
@@ -36,6 +37,7 @@ mod tag_open_state_transition;
 
 pub use after_attribute_name_state_transition::after_attribute_name_state_transition;
 pub use attribute_name_state_transition::attribute_name_state_transition;
+pub use attribute_value_double_quoted_state_transition::attribute_value_double_quoted_state_transition;
 pub use before_attribute_name_state_transition::before_attribute_name_state_transition;
 pub use before_attribute_value_state_transition::before_attribute_value_state_transition;
 pub use data_state_transition::data_state_transition;
