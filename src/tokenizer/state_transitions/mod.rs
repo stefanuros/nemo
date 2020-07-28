@@ -6,6 +6,7 @@ mod attribute_value_single_quoted_state_transition;
 mod attribute_value_unquoted_state_transition;
 mod before_attribute_name_state_transition;
 mod before_attribute_value_state_transition;
+mod bogus_comment_state_transition;
 mod data_state_transition;
 mod end_tag_open_state_transition;
 mod plaintext_state_transition;
@@ -47,6 +48,7 @@ pub use attribute_value_single_quoted_state_transition::attribute_value_single_q
 pub use attribute_value_unquoted_state_transition::attribute_value_unquoted_state_transition;
 pub use before_attribute_name_state_transition::before_attribute_name_state_transition;
 pub use before_attribute_value_state_transition::before_attribute_value_state_transition;
+pub use bogus_comment_state_transition::bogus_comment_state_transition;
 pub use data_state_transition::data_state_transition;
 pub use end_tag_open_state_transition::end_tag_open_state_transition;
 pub use plaintext_state_transition::plaintext_state_transition;
