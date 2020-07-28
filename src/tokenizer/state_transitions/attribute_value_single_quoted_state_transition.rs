@@ -111,7 +111,8 @@ mod tests {
               ..Attribute::default()
             }
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -125,7 +126,8 @@ mod tests {
               ..Attribute::default()
             }
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -158,7 +160,8 @@ mod tests {
               ..Attribute::default()
             }
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -172,7 +175,8 @@ mod tests {
               ..Attribute::default()
             }
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -205,7 +209,8 @@ mod tests {
               ..Attribute::default()
             }
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -220,7 +225,8 @@ mod tests {
               ..Attribute::default()
             }
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -253,7 +259,8 @@ mod tests {
               ..Attribute::default()
             }
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -267,7 +274,8 @@ mod tests {
               ..Attribute::default()
             }
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -300,7 +308,8 @@ mod tests {
               ..Attribute::default()
             }
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -315,7 +324,8 @@ mod tests {
               ..Attribute::default()
             }
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );

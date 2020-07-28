@@ -35,6 +35,7 @@ mod script_data_escaped_less_than_sign_state_transition;
 mod script_data_escaped_state_transition;
 mod script_data_less_than_sign_state_transition;
 mod script_data_state_transition;
+mod self_closing_start_tag_state_transition;
 mod tag_name_state_transition;
 mod tag_open_state_transition;
 
@@ -75,5 +76,6 @@ pub use script_data_escaped_less_than_sign_state_transition::script_data_escaped
 pub use script_data_escaped_state_transition::script_data_escaped_state_transition;
 pub use script_data_less_than_sign_state_transition::script_data_less_than_sign_state_transition;
 pub use script_data_state_transition::script_data_state_transition;
+pub use self_closing_start_tag_state_transition::self_closing_start_tag_state_transition;
 pub use tag_name_state_transition::tag_name_state_transition;
 pub use tag_open_state_transition::tag_open_state_transition;

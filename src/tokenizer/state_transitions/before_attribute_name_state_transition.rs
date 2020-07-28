@@ -93,7 +93,8 @@ mod tests {
       Token::StartTagToken(
         TagToken {
           attributes: vec![],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -102,7 +103,8 @@ mod tests {
       Token::StartTagToken(
         TagToken {
           attributes: vec![],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -127,7 +129,8 @@ mod tests {
       Token::StartTagToken(
         TagToken {
           attributes: vec![],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -136,7 +139,8 @@ mod tests {
       Token::StartTagToken(
         TagToken {
           attributes: vec![],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -161,7 +165,8 @@ mod tests {
       Token::StartTagToken(
         TagToken {
           attributes: vec![],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -170,7 +175,8 @@ mod tests {
       Token::StartTagToken(
         TagToken {
           attributes: vec![],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -195,7 +201,8 @@ mod tests {
       Token::StartTagToken(
         TagToken {
           attributes: vec![],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -206,7 +213,8 @@ mod tests {
           attributes: vec![
             Attribute::new('=')
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -231,7 +239,8 @@ mod tests {
       Token::StartTagToken(
         TagToken {
           attributes: vec![],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );
@@ -242,7 +251,8 @@ mod tests {
           attributes: vec![
             Attribute::default()
           ],
-          tag_name: "div".to_string()
+          tag_name: "div".to_string(),
+          ..TagToken::default()
         }
       )
     );

@@ -140,6 +140,7 @@ fn tokenize(
     DataState::AttributeValueSingleQuotedState => state_transitions::attribute_value_single_quoted_state_transition(c, current_state, return_state, current_token),
     DataState::AttributeValueUnquotedState => state_transitions::attribute_value_unquoted_state_transition(c, current_state, return_state, current_token),
     DataState::AfterAttributeValueQuotedState => state_transitions::after_attribute_value_quoted_state_transition(c, current_state, current_token),
+    DataState::SelfClosingStartTagState => state_transitions::self_closing_start_tag_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }

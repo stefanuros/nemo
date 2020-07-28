@@ -12,7 +12,8 @@ pub struct TagToken {
   /// The last attribute in the list is the current_attribute
   pub attributes: Vec<Attribute>,
   /// The name of the tag
-  pub tag_name: String
+  pub tag_name: String,
+  pub self_closing: bool
 }
 
 impl TagToken {
@@ -20,7 +21,8 @@ impl TagToken {
   pub fn new(s: &str) -> TagToken {
     return TagToken {
       attributes: vec![],
-      tag_name: s.to_string()
+      tag_name: s.to_string(),
+      self_closing: false
     };
   }
 
@@ -72,6 +74,14 @@ impl TagToken {
     return self.get_current_attribute().unwrap();
   }
 
+  pub fn is_self_closing(&self) -> bool {
+    return self.self_closing;
+  }
+
+  pub fn set_self_closing(&mut self, self_closing: bool) {
+    self.self_closing = self_closing;
+  }
+
   /// Sets the is_duplicate value for the current attribute
   pub fn update_current_attribute_duplicate_flag(&mut self) -> bool {
 
@@ -103,7 +113,8 @@ impl Default for TagToken {
   fn default() -> TagToken {
     return TagToken {
       attributes: vec![],
-      tag_name: "".to_string()
+      tag_name: "".to_string(),
+      self_closing: false
     };
   }
 }
