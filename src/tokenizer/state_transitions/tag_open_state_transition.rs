@@ -61,7 +61,7 @@ fn tag_open_state_transition_question_mark(
 
   *current_state = DataState::BogusCommentState;
   *current_token = Some(
-    Token::CommentToken("".to_string())
+    Token::empty_comment()
   );
   
   return (None, true);
@@ -162,7 +162,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::BogusCommentState, current_state);
-    assert_eq!(Some(Token::CommentToken("".to_string())), current_token);
+    assert_eq!(Some(Token::empty_comment()), current_token);
   }
 
   #[test]

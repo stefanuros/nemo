@@ -7,7 +7,7 @@ pub fn bogus_comment_state_transition(
   current_state: &mut DataState,
   current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Self Closing Start Tag State c: '{:?}'", c);
+  println!("Bogus Comment State c: '{:?}'", c);
 
   return match c {
     Some('\u{003E}') => bogus_comment_state_transition_greater_than_sign(c, current_state, current_token),
@@ -22,7 +22,7 @@ fn bogus_comment_state_transition_greater_than_sign(
   current_state: &mut DataState,
   current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Self Closing Start Tag State Greater Than Sign: '{:?}'", c);
+  println!("Bogus Comment State Greater Than Sign: '{:?}'", c);
 
   *current_state = DataState::DataState;
 
@@ -38,7 +38,7 @@ fn bogus_comment_state_transition_eof(
   c: Option<char>,
   current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Self Closing Start Tag State EOF: '{:?}'", c);
+  println!("Bogus Comment State EOF: '{:?}'", c);
 
   return (
     Some(vec![
@@ -53,7 +53,7 @@ fn bogus_comment_state_transition_null(
   c: Option<char>,
   current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Self Closing Start Tag State Null: '{:?}'", c);
+  println!("Bogus Comment State Null: '{:?}'", c);
 
   unexpected_null_character_parse_error::error(DataState::BogusCommentState.to_string(), c.unwrap());
 
@@ -68,7 +68,7 @@ fn bogus_comment_state_transition_anything_else(
   c: Option<char>,
   current_token: &mut Option<Token>
 ) -> (Option<Vec<Token>>, bool) {
-  println!("Self Closing Start Tag State Anything Else: '{:?}'", c);
+  println!("Bogus Comment State Anything Else: '{:?}'", c);
 
   if let Some(Token::CommentToken(ref mut comment)) = current_token {
     comment.push(c.unwrap());
@@ -86,11 +86,11 @@ mod tests {
     const C: Option<char> = Some('>');
     let mut current_state: DataState = DataState::BogusCommentState;
     let mut current_token: Option<Token> = Some(
-      Token::CommentToken("comment".to_string())
+      Token::new_comment("comment")
     );
 
     let expected_current_token: Option<Token> = Some(
-      Token::CommentToken("comment".to_string())
+      Token::new_comment("comment")
     );
 
     let expected: (Option<Vec<Token>>, bool) = (
@@ -115,11 +115,11 @@ mod tests {
     const C: Option<char> = None;
     let mut current_state: DataState = DataState::BogusCommentState;
     let mut current_token: Option<Token> = Some(
-      Token::CommentToken("comment".to_string())
+      Token::new_comment("comment")
     );
 
     let expected_current_token: Option<Token> = Some(
-      Token::CommentToken("comment".to_string())
+      Token::new_comment("comment")
     );
 
     let expected: (Option<Vec<Token>>, bool) = (
@@ -145,11 +145,11 @@ mod tests {
     const C: Option<char> = Some('\0');
     let mut current_state: DataState = DataState::BogusCommentState;
     let mut current_token: Option<Token> = Some(
-      Token::CommentToken("comment".to_string())
+      Token::new_comment("comment")
     );
 
     let expected_current_token: Option<Token> = Some(
-      Token::CommentToken("comment�".to_string())
+      Token::new_comment("comment�")
     );
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
@@ -169,11 +169,11 @@ mod tests {
     const C: Option<char> = Some('g');
     let mut current_state: DataState = DataState::BogusCommentState;
     let mut current_token: Option<Token> = Some(
-      Token::CommentToken("comment".to_string())
+      Token::new_comment("comment")
     );
 
     let expected_current_token: Option<Token> = Some(
-      Token::CommentToken("commentg".to_string())
+      Token::new_comment("commentg")
     );
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
