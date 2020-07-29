@@ -138,6 +138,7 @@ fn tokenize(
     DataState::SelfClosingStartTagState => state_transitions::self_closing_start_tag_state_transition(c, current_state, current_token),
     DataState::BogusCommentState => state_transitions::bogus_comment_state_transition(c, current_state, current_token),
     DataState::MarkupDeclarationOpenState => state_transitions::markup_declaration_open_state_transition(current_state, current_token, iter),
+    DataState::CommentStartState => state_transitions::comment_start_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }
