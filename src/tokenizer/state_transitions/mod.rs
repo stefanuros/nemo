@@ -9,6 +9,7 @@ mod before_attribute_value_state_transition;
 mod bogus_comment_state_transition;
 mod data_state_transition;
 mod end_tag_open_state_transition;
+mod markup_declaration_open_state_transition;
 mod plaintext_state_transition;
 mod rawtext_end_tag_name_state_transition;
 mod rawtext_end_tag_open_state_transition;
@@ -51,6 +52,7 @@ pub use before_attribute_value_state_transition::before_attribute_value_state_tr
 pub use bogus_comment_state_transition::bogus_comment_state_transition;
 pub use data_state_transition::data_state_transition;
 pub use end_tag_open_state_transition::end_tag_open_state_transition;
+pub use markup_declaration_open_state_transition::markup_declaration_open_state_transition;
 pub use plaintext_state_transition::plaintext_state_transition;
 pub use rawtext_end_tag_name_state_transition::rawtext_end_tag_name_state_transition;
 pub use rawtext_end_tag_open_state_transition::rawtext_end_tag_open_state_transition;

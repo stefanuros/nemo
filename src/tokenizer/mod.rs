@@ -50,11 +50,6 @@ pub fn init_tokenization() {
       current_input_character = iter.next();
     }
 
-    // Pass the iter to the state handler for specific states
-    let should_pass_iter = 
-      current_state == DataState::MarkupDeclarationOpenState ||
-      current_state == DataState::AfterDOCTYPENameState;
-
     // Get the emitted tokens and whether the character is safe to iterate or if it should be reconsumed
     let (emitted_tokens, should_reconsume) = tokenize(
       current_input_character, 
@@ -63,7 +58,7 @@ pub fn init_tokenization() {
       &mut current_token,
       &mut temporary_buffer,
       &recent_start_tag,
-      if should_pass_iter { Some(&mut iter) } else { None },
+      &mut iter
     );
 
     // Deal with current_input_character reconsuming
@@ -98,7 +93,7 @@ fn tokenize(
   current_token: &mut Option<Token>,
   temporary_buffer: &mut String,
   recent_start_tag: &Option<Token>,
-  iter: Option<&mut itertools::MultiPeek<std::str::Chars>>
+  iter: &mut itertools::MultiPeek<std::str::Chars>
 ) -> (Option<Vec<Token>>, bool) {
   return match current_state {
     DataState::DataState => state_transitions::data_state_transition(c, current_state, return_state),
@@ -142,34 +137,7 @@ fn tokenize(
     DataState::AfterAttributeValueQuotedState => state_transitions::after_attribute_value_quoted_state_transition(c, current_state, current_token),
     DataState::SelfClosingStartTagState => state_transitions::self_closing_start_tag_state_transition(c, current_state, current_token),
     DataState::BogusCommentState => state_transitions::bogus_comment_state_transition(c, current_state, current_token),
+    DataState::MarkupDeclarationOpenState => state_transitions::markup_declaration_open_state_transition(current_state, current_token, iter),
     _ => (None, false),
   }
 }
-
-  // The following code is example code for states 42 and 56
-  // let mut test_string: String = "".to_string();
-
-  // for i in 0 .. 7 {
-  //   match iter.peek() {
-  //     Some(v) => test_string = [test_string, v.to_string()].concat(),
-  //     None => print!("run anything else code"),
-  //   }
-
-  //   if test_string.to_ascii_lowercase() == "doctype" {
-  //     print!("run doctype code");
-  //   }
-
-  //   match test_string.as_str() {
-  //     "--" => print!("run -- code"),
-  //     "[CDATA[" => print!("run cdata code"),
-  //     _ => (),
-  //   }
-
-  //   if !"doctype".starts_with(test_string.to_ascii_lowercase().as_str()) &&
-  //     !"[CDATA[".starts_with(test_string.as_str()) &&
-  //     !"--".starts_with(test_string.as_str()) {
-  //       print!("run anything else code")
-  //   }
-  // }
-
-  // println!("{:?}", iter.peek().unwrap().to_string());
