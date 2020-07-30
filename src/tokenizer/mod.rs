@@ -143,6 +143,7 @@ fn tokenize(
     DataState::CommentState => state_transitions::comment_state_transition(c, current_state, current_token),
     DataState::CommentLessThanSignState => state_transitions::comment_less_than_sign_state_transition(c, current_state, current_token),
     DataState::CommentLessThanSignBangState => state_transitions::comment_less_than_sign_bang_state_transition(c, current_state),
+    DataState::CommentLessThanSignBangDashState => state_transitions::comment_less_than_sign_bang_dash_state_transition(c, current_state),
     _ => (None, false),
   }
 }
