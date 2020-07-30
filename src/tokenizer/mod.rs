@@ -141,6 +141,7 @@ fn tokenize(
     DataState::CommentStartState => state_transitions::comment_start_state_transition(c, current_state, current_token),
     DataState::CommentStartDashState => state_transitions::comment_start_dash_state_transition(c, current_state, current_token),
     DataState::CommentState => state_transitions::comment_state_transition(c, current_state, current_token),
+    DataState::CommentLessThanSignState => state_transitions::comment_less_than_sign_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }
