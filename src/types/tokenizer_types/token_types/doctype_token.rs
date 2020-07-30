@@ -6,10 +6,27 @@ use std::fmt::{
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct DoctypeToken {
-  pub force_quirks: bool
+  pub force_quirks: bool,
+  pub name: String
 }
 
 impl DoctypeToken {
+  /// Create a new DoctypeToken with a string as the name
+  pub fn new(name: &str) -> DoctypeToken {
+    return DoctypeToken {
+      name: name.to_string(),
+      ..DoctypeToken::default()
+    };
+  }
+
+  /// Create a new DoctypeToken with a character as the name
+  pub fn new_c(name: char) -> DoctypeToken {
+    return DoctypeToken {
+      name: name.to_string(),
+      ..DoctypeToken::default()
+    };
+  }
+
   pub fn is_force_quirks(&self) -> bool {
     return self.force_quirks;
   }
@@ -23,7 +40,8 @@ impl Default for DoctypeToken {
   /// Creates a new DoctypeToken with all default values
   fn default() -> DoctypeToken {
     return DoctypeToken {
-      force_quirks: false
+      force_quirks: false,
+      name: "".to_string()
     };
   }
 }

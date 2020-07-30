@@ -148,7 +148,8 @@ fn tokenize(
     DataState::CommentEndDashState => state_transitions::comment_end_dash_state_transition(c, current_state, current_token),
     DataState::CommentEndState => state_transitions::comment_end_state_transition(c, current_state, current_token),
     DataState::CommentEndBangState => state_transitions::comment_end_bang_state_transition(c, current_state, current_token),
-    DataState::DOCTYPEState=> state_transitions::doctype_state_transition(c, current_state),
+    DataState::DOCTYPEState => state_transitions::doctype_state_transition(c, current_state),
+    DataState::BeforeDOCTYPENameState => state_transitions::before_doctype_name_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }
