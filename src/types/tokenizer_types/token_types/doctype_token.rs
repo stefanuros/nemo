@@ -34,6 +34,13 @@ impl DoctypeToken {
   pub fn set_force_quirks(&mut self, force_quirks: bool) {
     self.force_quirks = force_quirks;
   }
+
+  pub fn push_to_name(&mut self, c: char) {
+    match self.name {
+      Some(ref mut name) => name.push(c),
+      None => self.name = Some(c.to_string())
+    };
+  }
 }
 
 impl Default for DoctypeToken {
