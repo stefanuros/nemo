@@ -18,6 +18,7 @@ mod comment_start_dash_state_transition;
 mod comment_start_state_transition;
 mod comment_state_transition;
 mod data_state_transition;
+mod doctype_state_transition;
 mod end_tag_open_state_transition;
 mod markup_declaration_open_state_transition;
 mod plaintext_state_transition;
@@ -71,6 +72,7 @@ pub use comment_start_dash_state_transition::comment_start_dash_state_transition
 pub use comment_start_state_transition::comment_start_state_transition;
 pub use comment_state_transition::comment_state_transition;
 pub use data_state_transition::data_state_transition;
+pub use doctype_state_transition::doctype_state_transition;
 pub use end_tag_open_state_transition::end_tag_open_state_transition;
 pub use markup_declaration_open_state_transition::markup_declaration_open_state_transition;
 pub use plaintext_state_transition::plaintext_state_transition;

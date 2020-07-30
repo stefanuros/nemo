@@ -6,7 +6,7 @@ use std::fmt::{
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct DoctypeToken {
-  force_quirks: bool
+  pub force_quirks: bool
 }
 
 impl DoctypeToken {
