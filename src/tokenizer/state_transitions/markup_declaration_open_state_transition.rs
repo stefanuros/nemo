@@ -6,19 +6,26 @@ use crate::types::tokenizer_types::data_states::DataState;
 use crate::types::tokenizer_types::tokens::Token;
 
 pub fn markup_declaration_open_state_transition(
+  c: Option<char>,
   current_state: &mut DataState,
   current_token: &mut Option<Token>,
   iter: &mut itertools::MultiPeek<std::str::Chars>
 ) -> (Option<Vec<Token>>, bool) {
-  // println!("Markup Declaration Open State c: '{:?}'", c);
+  println!("Markup Declaration Open State c: '{:?}'", c);
 
-  let mut peek = "".to_string();
+  // if c is none, it won't match anything
+  if let None = c {
+    return markup_declaration_open_state_transition_anything_else("".to_string(), current_state, current_token)
+  }
 
-  // Loop to 7 because the longest string we're matching is 7 characters 
-  for _ in 0..7 {
+  // c is the starting character
+  let mut peek = c.unwrap().to_string();
+
+  // Loop to 6 because the longest string we're matching is 7 characters and c is the first character
+  for _ in 0..6 {
     // Peek at the next character
     match iter.peek() {
-      Some(c) => peek.push(c.clone()),
+      Some(x) => peek.push(x.clone()),
       None => return markup_declaration_open_state_transition_anything_else(peek, current_state, current_token)
     };
 
@@ -49,7 +56,7 @@ fn markup_declaration_open_state_transition_hyphens(
   println!("Markup Declaration Open State Hyphens");
 
   // Skip 2 elements of the iterator since we used them to get to here
-  iter.nth(1);
+  iter.nth(0);
 
   *current_token = Some(Token::empty_comment());
   *current_state = DataState::CommentStartState;
@@ -63,7 +70,7 @@ fn markup_declaration_open_state_transition_doctype(
 ) -> (Option<Vec<Token>>, bool) {
   println!("Markup Declaration Open State DOCTYPE");
 
-  iter.nth(6);
+  iter.nth(5);
 
   *current_state = DataState::DOCTYPEState;
   
@@ -79,7 +86,7 @@ fn markup_declaration_open_state_transition_cdata(
   
   cdata_in_html_content_parse_error::error(DataState::MarkupDeclarationOpenState.to_string());
 
-  iter.nth(6);
+  iter.nth(5);
 
   *current_token = Some(Token::new_comment("[CDATA["));
   *current_state = DataState::BogusCommentState;
@@ -103,7 +110,7 @@ fn markup_declaration_open_state_transition_anything_else(
   *current_token = Some(Token::empty_comment());
   *current_state = DataState::BogusCommentState;
 
-  return (None, false);
+  return (None, true);
 }
 
 #[cfg(test)]
@@ -112,11 +119,12 @@ mod tests {
 
   #[test]
   fn markup_declaration_open_state_transition_hyphens() {
+    const C: Option<char> = Some('-');
     let mut current_state: DataState = DataState::MarkupDeclarationOpenState;
     let mut current_token: Option<Token> = Some(
       Token::CommentToken("comment".to_string())
     );
-    let mut iter = itertools::multipeek("--A".chars());
+    let mut iter = itertools::multipeek("-A".chars());
 
     let expected_current_token: Option<Token> = Some(
       Token::CommentToken("".to_string())
@@ -124,6 +132,7 @@ mod tests {
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = markup_declaration_open_state_transition(
+      C,
       &mut current_state,
       &mut current_token,
       &mut iter
@@ -137,11 +146,12 @@ mod tests {
 
   #[test]
   fn markup_declaration_open_state_transition_doctype() {
+    const C: Option<char> = Some('d');
     let mut current_state: DataState = DataState::MarkupDeclarationOpenState;
     let mut current_token: Option<Token> = Some(
       Token::CommentToken("comment".to_string())
     );
-    let mut iter = itertools::multipeek("DOCTYPEA".chars());
+    let mut iter = itertools::multipeek("OCTYPEA".chars());
 
     let expected_current_token: Option<Token> = Some(
       Token::CommentToken("comment".to_string())
@@ -149,6 +159,7 @@ mod tests {
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = markup_declaration_open_state_transition(
+      C,
       &mut current_state,
       &mut current_token,
       &mut iter
@@ -162,11 +173,12 @@ mod tests {
 
   #[test]
   fn markup_declaration_open_state_transition_cdata() {
+    const C: Option<char> = Some('[');
     let mut current_state: DataState = DataState::MarkupDeclarationOpenState;
     let mut current_token: Option<Token> = Some(
       Token::CommentToken("comment".to_string())
     );
-    let mut iter = itertools::multipeek("[CDATA[A".chars());
+    let mut iter = itertools::multipeek("CDATA[A".chars());
 
     let expected_current_token: Option<Token> = Some(
       Token::CommentToken("[CDATA[".to_string())
@@ -174,6 +186,7 @@ mod tests {
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = markup_declaration_open_state_transition(
+      C,
       &mut current_state,
       &mut current_token,
       &mut iter
@@ -187,18 +200,20 @@ mod tests {
 
   #[test]
   fn markup_declaration_open_state_transition_anything_else() {
+    const C: Option<char> = Some('a');
     let mut current_state: DataState = DataState::MarkupDeclarationOpenState;
     let mut current_token: Option<Token> = Some(
       Token::CommentToken("comment".to_string())
     );
-    let mut iter = itertools::multipeek("abc".chars());
+    let mut iter = itertools::multipeek("bc".chars());
 
     let expected_current_token: Option<Token> = Some(
       Token::CommentToken("".to_string())
     );
 
-    let expected: (Option<Vec<Token>>, bool) = (None, false);
+    let expected: (Option<Vec<Token>>, bool) = (None, true);
     let result = markup_declaration_open_state_transition(
+      C,
       &mut current_state,
       &mut current_token,
       &mut iter
@@ -207,6 +222,6 @@ mod tests {
     assert_eq!(expected, result);
     assert_eq!(DataState::BogusCommentState, current_state);
     assert_eq!(expected_current_token, current_token);
-    assert_eq!(iter.next(), Some('a'));
+    assert_eq!(iter.next(), Some('b'));
   }
 }
