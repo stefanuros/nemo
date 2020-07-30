@@ -4,13 +4,16 @@ use std::fmt::{
   Result
 };
 
-use super::token_types::TagToken ;
+use super::token_types::{
+  TagToken,
+  DoctypeToken
+};
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Token {
   CharacterToken(char),
   CommentToken(String),
-  DOCTYPE(),
+  DOCTYPE(DoctypeToken),
   EndTagToken(TagToken),
   EOFToken,
   StartTagToken(TagToken),
