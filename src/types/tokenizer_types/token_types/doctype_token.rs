@@ -7,14 +7,14 @@ use std::fmt::{
 #[derive(Debug, PartialEq, Clone)]
 pub struct DoctypeToken {
   pub force_quirks: bool,
-  pub name: String
+  pub name: Option<String>
 }
 
 impl DoctypeToken {
   /// Create a new DoctypeToken with a string as the name
   pub fn new(name: &str) -> DoctypeToken {
     return DoctypeToken {
-      name: name.to_string(),
+      name: Some(name.to_string()),
       ..DoctypeToken::default()
     };
   }
@@ -22,7 +22,7 @@ impl DoctypeToken {
   /// Create a new DoctypeToken with a character as the name
   pub fn new_c(name: char) -> DoctypeToken {
     return DoctypeToken {
-      name: name.to_string(),
+      name: Some(name.to_string()),
       ..DoctypeToken::default()
     };
   }
@@ -41,7 +41,7 @@ impl Default for DoctypeToken {
   fn default() -> DoctypeToken {
     return DoctypeToken {
       force_quirks: false,
-      name: "".to_string()
+      name: None
     };
   }
 }

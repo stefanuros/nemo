@@ -158,7 +158,7 @@ mod tests {
     let expected_current_token: Option<Token> = Some(
       Token::DOCTYPE(
         DoctypeToken {
-          name: "a".to_string(),
+          name: Some("a".to_string()),
           ..DoctypeToken::default()
         }
       )
@@ -184,7 +184,7 @@ mod tests {
     let expected_current_token: Option<Token> = Some(
       Token::DOCTYPE(
         DoctypeToken {
-          name: "�".to_string(),
+          name: Some("�".to_string()),
           ..DoctypeToken::default()
         }
       )
@@ -269,7 +269,7 @@ mod tests {
     let expected_current_token: Option<Token> = Some(
       Token::DOCTYPE(
         DoctypeToken {
-          name: "g".to_string(),
+          name: Some("g".to_string()),
           ..DoctypeToken::default()
         }
       )
