@@ -147,6 +147,7 @@ fn tokenize(
     DataState::CommentLessThanSignBangDashDashState => state_transitions::comment_less_than_sign_bang_dash_dash_state_transition(c, current_state),
     DataState::CommentEndDashState => state_transitions::comment_end_dash_state_transition(c, current_state, current_token),
     DataState::CommentEndState => state_transitions::comment_end_state_transition(c, current_state, current_token),
+    DataState::CommentEndBangState => state_transitions::comment_end_bang_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }
