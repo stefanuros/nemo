@@ -26,10 +26,10 @@ pub fn markup_declaration_open_state_transition(
     // Peek at the next character
     match iter.peek() {
       Some(x) => peek.push(x.clone()),
-      None => return markup_declaration_open_state_transition_anything_else(peek, current_state, current_token)
+      None => break
     };
 
-  println!("Markup Declaration Open State c: '{:?}'", peek);
+    println!("Markup Declaration Open State c: '{:?}'", peek);
 
     // Catch a case-insensitive match for the word DOCTYPE
     if peek.to_ascii_uppercase() == "DOCTYPE" {
