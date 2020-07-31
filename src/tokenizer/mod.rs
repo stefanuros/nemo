@@ -152,6 +152,7 @@ fn tokenize(
     DataState::BeforeDOCTYPENameState => state_transitions::before_doctype_name_state_transition(c, current_state, current_token),
     DataState::DOCTYPENameState => state_transitions::doctype_name_state_transition(c, current_state, current_token),
     DataState::AfterDOCTYPENameState => state_transitions::after_doctype_name_state_transition(c, current_state, current_token, iter),
+    DataState::AfterDOCTYPEPublicKeywordState => state_transitions::after_doctype_public_keyword_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }
