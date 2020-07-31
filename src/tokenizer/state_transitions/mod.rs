@@ -55,7 +55,9 @@ mod script_data_state_transition;
 mod self_closing_start_tag_state_transition;
 mod tag_name_state_transition;
 mod tag_open_state_transition;
+mod before_doctype_public_identifier_state_transition;
 
+pub use before_doctype_public_identifier_state_transition::before_doctype_public_identifier_state_transition;
 pub use after_attribute_name_state_transition::after_attribute_name_state_transition;
 pub use after_attribute_value_quoted_state_transition::after_attribute_value_quoted_state_transition;
 pub use after_doctype_name_state_transition::after_doctype_name_state_transition;
