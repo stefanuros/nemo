@@ -1,4 +1,5 @@
 pub mod abrupt_closing_of_empty_comment_parse_error;
+pub mod abrupt_doctype_public_identifier_parse_error;
 pub mod cdata_in_html_content_parse_error;
 pub mod eof_before_tag_name_parse_error;
 pub mod eof_in_comment_parse_error;
