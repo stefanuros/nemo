@@ -1,7 +1,6 @@
 use crate::errors::tokenizer_errors::{
   eof_in_doctype_parse_error,
   missing_quote_before_doctype_system_identifier_parse_error,
-  missing_whitespace_after_doctype_system_keyword_parse_error,
   missing_doctype_system_identifier_parse_error
 };
 use crate::types::tokenizer_types::{
