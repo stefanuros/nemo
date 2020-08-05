@@ -162,6 +162,7 @@ fn tokenize(
     DataState::BeforeDOCTYPESystemIdentifierState => state_transitions::before_doctype_system_identifier_state_transition(c, current_state, current_token),
     DataState::DOCTYPESystemIdentifierDoubleQuotedState => state_transitions::doctype_system_identifier_double_quoted_state_transition(c, current_state, current_token),
     DataState::DOCTYPESystemIdentifierSingleQuotedState => state_transitions::doctype_system_identifier_single_quoted_state_transition(c, current_state, current_token),
+    DataState::AfterDOCTYPESystemIdentifierState => state_transitions::after_doctype_system_identifier_state_transition(c, current_state, current_token),
     _ => (None, false),
   }
 }
