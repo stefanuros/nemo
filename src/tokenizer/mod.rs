@@ -165,6 +165,7 @@ fn tokenize(
     DataState::AfterDOCTYPESystemIdentifierState => state_transitions::after_doctype_system_identifier_state_transition(c, current_state, current_token),
     DataState::BogusDOCTYPEState => state_transitions::bogus_doctype_state_transition(c, current_state, current_token),
     DataState::CDATASectionState => state_transitions::cdata_section_state_transition(c, current_state),
+    DataState::CDATASectionBracketState => state_transitions::cdata_section_bracket_state_transition(c, current_state),
     _ => (None, false),
   }
 }
