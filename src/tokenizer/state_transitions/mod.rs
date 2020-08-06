@@ -18,6 +18,7 @@ mod between_doctype_public_and_system_identifiers_state_transition;
 mod bogus_comment_state_transition;
 mod bogus_doctype_state_transition;
 mod cdata_section_bracket_state_transition;
+mod cdata_section_end_state_transition;
 mod cdata_section_state_transition;
 mod comment_end_bang_state_transition;
 mod comment_end_dash_state_transition;
@@ -89,6 +90,7 @@ pub use between_doctype_public_and_system_identifiers_state_transition::between_
 pub use bogus_comment_state_transition::bogus_comment_state_transition;
 pub use bogus_doctype_state_transition::bogus_doctype_state_transition;
 pub use cdata_section_bracket_state_transition::cdata_section_bracket_state_transition;
+pub use cdata_section_end_state_transition::cdata_section_end_state_transition;
 pub use cdata_section_state_transition::cdata_section_state_transition;
 pub use comment_end_bang_state_transition::comment_end_bang_state_transition;
 pub use comment_end_dash_state_transition::comment_end_dash_state_transition;
