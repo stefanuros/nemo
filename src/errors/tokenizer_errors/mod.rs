@@ -3,6 +3,7 @@ pub mod abrupt_doctype_public_identifier_parse_error;
 pub mod abrupt_doctype_system_identifier_parse_error;
 pub mod cdata_in_html_content_parse_error;
 pub mod eof_before_tag_name_parse_error;
+pub mod eof_in_cdata_parse_error;
 pub mod eof_in_comment_parse_error;
 pub mod eof_in_doctype_parse_error;
 pub mod eof_in_script_html_comment_like_text_parse_error;
