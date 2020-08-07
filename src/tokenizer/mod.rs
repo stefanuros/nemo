@@ -167,6 +167,7 @@ fn tokenize(
     DataState::CDATASectionState => state_transitions::cdata_section_state_transition(c, current_state),
     DataState::CDATASectionBracketState => state_transitions::cdata_section_bracket_state_transition(c, current_state),
     DataState::CDATASectionEndState => state_transitions::cdata_section_end_state_transition(c, current_state),
+    DataState::CharacterReferenceState => state_transitions::character_reference_state_transition(c, current_state, return_state, current_token, temporary_buffer),
     _ => (None, false),
   }
 }
