@@ -1,6 +1,5 @@
 use crate::types::tokenizer_types::data_states::DataState;
 use crate::types::tokenizer_types::tokens::Token;
-use itertools;
 
 mod state_transitions;
 
@@ -168,6 +167,7 @@ fn tokenize(
     DataState::CDATASectionBracketState => state_transitions::cdata_section_bracket_state_transition(c, current_state),
     DataState::CDATASectionEndState => state_transitions::cdata_section_end_state_transition(c, current_state),
     DataState::CharacterReferenceState => state_transitions::character_reference_state_transition(c, current_state, return_state, current_token, temporary_buffer),
+    DataState::NamedCharacterReferenceState => state_transitions::named_character_reference_state_transition(c, current_state, return_state, current_token, temporary_buffer, iter),
     _ => (None, false),
   }
 }
