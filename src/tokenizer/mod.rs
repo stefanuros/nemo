@@ -173,6 +173,7 @@ fn tokenize(
     DataState::NamedCharacterReferenceState => state_transitions::named_character_reference_state_transition(c, current_state, return_state, current_token, temporary_buffer, iter),
     DataState::AmbiguousAmpersandState => state_transitions::ambiguous_ampersand_state_transition(c, current_state, return_state, current_token),
     DataState::NumericCharacterReferenceState => state_transitions::numeric_character_reference_state_transition(c, current_state, temporary_buffer, character_reference_code),
+    DataState::HexadecimalCharacterReferenceStartState => state_transitions::hexadecimal_character_reference_start_state_transition(c, current_state, return_state, current_token, temporary_buffer),
     _ => (None, false),
   }
 }
