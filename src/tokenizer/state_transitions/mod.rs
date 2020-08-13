@@ -42,6 +42,7 @@ mod doctype_system_identifier_single_quoted_state_transition;
 mod end_tag_open_state_transition;
 mod markup_declaration_open_state_transition;
 mod named_character_reference_state_transition;
+mod numeric_character_reference_state_transition;
 mod plaintext_state_transition;
 mod rawtext_end_tag_name_state_transition;
 mod rawtext_end_tag_open_state_transition;
@@ -117,6 +118,7 @@ pub use doctype_system_identifier_single_quoted_state_transition::doctype_system
 pub use end_tag_open_state_transition::end_tag_open_state_transition;
 pub use markup_declaration_open_state_transition::markup_declaration_open_state_transition;
 pub use named_character_reference_state_transition::named_character_reference_state_transition;
+pub use numeric_character_reference_state_transition::numeric_character_reference_state_transition;
 pub use plaintext_state_transition::plaintext_state_transition;
 pub use rawtext_end_tag_name_state_transition::rawtext_end_tag_name_state_transition;
 pub use rawtext_end_tag_open_state_transition::rawtext_end_tag_open_state_transition;

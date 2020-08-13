@@ -37,6 +37,7 @@ pub fn init_tokenization() {
 
   let mut temporary_buffer: String = "".to_string();
   let mut recent_start_tag: Option<Token> = None;
+  let mut character_reference_code: i32 = 0;
 
   let mut is_iter_empty = false;
   // Flag to check whether the next step should consume a new character or reuse the previous character
@@ -57,7 +58,8 @@ pub fn init_tokenization() {
       &mut current_token,
       &mut temporary_buffer,
       &recent_start_tag,
-      &mut iter
+      &mut iter,
+      &mut character_reference_code
     );
 
     // Deal with current_input_character reconsuming
@@ -92,7 +94,8 @@ fn tokenize(
   current_token: &mut Option<Token>,
   temporary_buffer: &mut String,
   recent_start_tag: &Option<Token>,
-  iter: &mut itertools::MultiPeek<std::str::Chars>
+  iter: &mut itertools::MultiPeek<std::str::Chars>,
+  character_reference_code: &mut i32
 ) -> (Option<Vec<Token>>, bool) {
   return match current_state {
     DataState::DataState => state_transitions::data_state_transition(c, current_state, return_state),
@@ -169,6 +172,7 @@ fn tokenize(
     DataState::CharacterReferenceState => state_transitions::character_reference_state_transition(c, current_state, return_state, current_token, temporary_buffer),
     DataState::NamedCharacterReferenceState => state_transitions::named_character_reference_state_transition(c, current_state, return_state, current_token, temporary_buffer, iter),
     DataState::AmbiguousAmpersandState => state_transitions::ambiguous_ampersand_state_transition(c, current_state, return_state, current_token),
+    DataState::NumericCharacterReferenceState => state_transitions::numeric_character_reference_state_transition(c, current_state, temporary_buffer, character_reference_code),
     _ => (None, false),
   }
 }
