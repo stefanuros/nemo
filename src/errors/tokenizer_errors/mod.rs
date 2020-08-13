@@ -33,3 +33,4 @@ pub mod unexpected_equals_sign_before_attribute_name_parse_error;
 pub mod unexpected_null_character_parse_error;
 pub mod unexpected_question_mark_instead_of_tag_name_parse_error;
 pub mod unexpected_solidus_in_tag_parse_error;
+pub mod unknown_named_character_reference_parse_error;

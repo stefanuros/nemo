@@ -168,6 +168,7 @@ fn tokenize(
     DataState::CDATASectionEndState => state_transitions::cdata_section_end_state_transition(c, current_state),
     DataState::CharacterReferenceState => state_transitions::character_reference_state_transition(c, current_state, return_state, current_token, temporary_buffer),
     DataState::NamedCharacterReferenceState => state_transitions::named_character_reference_state_transition(c, current_state, return_state, current_token, temporary_buffer, iter),
+    DataState::AmbiguousAmpersandState => state_transitions::ambiguous_ampersand_state_transition(c, current_state, return_state, current_token),
     _ => (None, false),
   }
 }
