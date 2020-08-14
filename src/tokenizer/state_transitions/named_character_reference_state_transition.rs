@@ -129,7 +129,7 @@ fn named_character_reference_state_transition_match(
   println!("Named Character Reference State Match: '{:?}'", c);
 
   if !is_last_semicolon {
-    missing_semicolon_after_character_reference_parse_error::error(DataState::NamedCharacterReferenceState.to_string(), c.unwrap());
+    missing_semicolon_after_character_reference_parse_error::error(DataState::NamedCharacterReferenceState.to_string(), c);
   }
 
   *temporary_buffer = NAMED_CHARACTER_REFERENCE.get(&key).unwrap().to_string();
