@@ -7,7 +7,7 @@ use crate::types::tokenizer_types::{
 pub fn decimal_character_reference_state_transition(
   c: Option<char>, 
   current_state: &mut DataState,
-  character_reference_code: &mut i32
+  character_reference_code: &mut u32
 ) -> (Option<Vec<Token>>, bool) {
   println!("Decimal Character Reference State c: '{:?}'", c);
 
@@ -20,12 +20,12 @@ pub fn decimal_character_reference_state_transition(
 
 fn decimal_character_reference_state_transition_ascii_digit(
   c: Option<char>,
-  character_reference_code: &mut i32
+  character_reference_code: &mut u32
 ) -> (Option<Vec<Token>>, bool) {
   println!("Decimal Character Reference State ASCII Digit: '{:?}'", c);
 
   *character_reference_code *= 10;
-  *character_reference_code += (c.unwrap() as i32) - 0x30;
+  *character_reference_code += (c.unwrap() as u32) - 0x30;
 
   return (None, false);
 }
@@ -63,7 +63,7 @@ mod tests {
   fn test_decimal_character_reference_state_transition_ascii_digit() {
     const C: Option<char> = Some('5');
     let mut current_state: DataState = DataState::DecimalCharacterReferenceState;
-    let mut character_reference_code: i32 = 10;
+    let mut character_reference_code: u32 = 10;
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = decimal_character_reference_state_transition(
@@ -81,7 +81,7 @@ mod tests {
   fn test_decimal_character_reference_state_transition_semicolon() {
     const C: Option<char> = Some(';');
     let mut current_state: DataState = DataState::DecimalCharacterReferenceState;
-    let mut character_reference_code: i32 = 10;
+    let mut character_reference_code: u32 = 10;
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = decimal_character_reference_state_transition(
@@ -99,7 +99,7 @@ mod tests {
   fn test_decimal_character_reference_state_transition_anything_else() {
     const C: Option<char> = Some('X');
     let mut current_state: DataState = DataState::DecimalCharacterReferenceState;
-    let mut character_reference_code: i32 = 10;
+    let mut character_reference_code: u32 = 10;
 
     let expected: (Option<Vec<Token>>, bool) = (None, true);
     let result = decimal_character_reference_state_transition(

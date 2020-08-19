@@ -37,7 +37,7 @@ pub fn init_tokenization() {
 
   let mut temporary_buffer: String = "".to_string();
   let mut recent_start_tag: Option<Token> = None;
-  let mut character_reference_code: i32 = 0;
+  let mut character_reference_code: u32 = 0;
 
   let mut is_iter_empty = false;
   // Flag to check whether the next step should consume a new character or reuse the previous character
@@ -95,7 +95,7 @@ fn tokenize(
   temporary_buffer: &mut String,
   recent_start_tag: &Option<Token>,
   iter: &mut itertools::MultiPeek<std::str::Chars>,
-  character_reference_code: &mut i32
+  character_reference_code: &mut u32
 ) -> (Option<Vec<Token>>, bool) {
   return match current_state {
     DataState::DataState => state_transitions::data_state_transition(c, current_state, return_state),
@@ -177,6 +177,6 @@ fn tokenize(
     DataState::DecimalCharacterReferenceStartState => state_transitions::decimal_character_reference_start_state_transition(c, current_state, return_state, current_token, temporary_buffer),
     DataState::HexidecimalCharacterReferenceState => state_transitions::hexadecimal_character_reference_state_transition(c, current_state, character_reference_code),
     DataState::DecimalCharacterReferenceState => state_transitions::decimal_character_reference_state_transition(c, current_state, character_reference_code),
-    _ => (None, false),
+    DataState::NumericCharacterReferenceEndState => state_transitions::numeric_character_reference_end_state_transition(c, current_state, return_state, current_token, temporary_buffer, character_reference_code),
   }
 }

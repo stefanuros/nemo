@@ -7,7 +7,7 @@ use crate::types::tokenizer_types::{
 pub fn hexadecimal_character_reference_state_transition(
   c: Option<char>, 
   current_state: &mut DataState,
-  character_reference_code: &mut i32
+  character_reference_code: &mut u32
 ) -> (Option<Vec<Token>>, bool) {
   println!("Hexadecimal Character Reference State c: '{:?}'", c);
 
@@ -30,36 +30,36 @@ fn is_ascii_lower_hex_digit(c: &char) -> bool {
 
 fn hexadecimal_character_reference_state_transition_ascii_digit(
   c: Option<char>,
-  character_reference_code: &mut i32
+  character_reference_code: &mut u32
 ) -> (Option<Vec<Token>>, bool) {
   println!("Hexadecimal Character Reference State ASCII Digit: '{:?}'", c);
 
   *character_reference_code *= 16;
-  *character_reference_code += (c.unwrap() as i32) - 0x30;
+  *character_reference_code += (c.unwrap() as u32) - 0x30;
 
   return (None, false);
 }
 
 fn hexadecimal_character_reference_state_transition_ascii_upper_hex_digit(
   c: Option<char>,
-  character_reference_code: &mut i32
+  character_reference_code: &mut u32
 ) -> (Option<Vec<Token>>, bool) {
   println!("Hexadecimal Character Reference State ASCII Upper Hex Digit: '{:?}'", c);
 
   *character_reference_code *= 16;
-  *character_reference_code += (c.unwrap() as i32) - 0x37;
+  *character_reference_code += (c.unwrap() as u32) - 0x37;
 
   return (None, false);
 }
 
 fn hexadecimal_character_reference_state_transition_ascii_lower_hex_digit(
   c: Option<char>,
-  character_reference_code: &mut i32
+  character_reference_code: &mut u32
 ) -> (Option<Vec<Token>>, bool) {
   println!("Hexadecimal Character Reference State ASCII Lower Hex Digit: '{:?}'", c);
 
   *character_reference_code *= 16;
-  *character_reference_code += (c.unwrap() as i32) - 0x57;
+  *character_reference_code += (c.unwrap() as u32) - 0x57;
 
   return (None, false);
 }
@@ -116,7 +116,7 @@ mod tests {
   fn test_hexadecimal_character_reference_state_transition_ascii_digit() {
     const C: Option<char> = Some('5');
     let mut current_state: DataState = DataState::HexidecimalCharacterReferenceState;
-    let mut character_reference_code: i32 = 10;
+    let mut character_reference_code: u32 = 10;
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = hexadecimal_character_reference_state_transition(
@@ -134,7 +134,7 @@ mod tests {
   fn test_hexadecimal_character_reference_state_transition_ascii_upper_hex_digit() {
     const C: Option<char> = Some('C');
     let mut current_state: DataState = DataState::HexidecimalCharacterReferenceState;
-    let mut character_reference_code: i32 = 10;
+    let mut character_reference_code: u32 = 10;
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = hexadecimal_character_reference_state_transition(
@@ -152,7 +152,7 @@ mod tests {
   fn test_hexadecimal_character_reference_state_transition_ascii_lower_hex_digit() {
     const C: Option<char> = Some('c');
     let mut current_state: DataState = DataState::HexidecimalCharacterReferenceState;
-    let mut character_reference_code: i32 = 10;
+    let mut character_reference_code: u32 = 10;
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = hexadecimal_character_reference_state_transition(
@@ -170,7 +170,7 @@ mod tests {
   fn test_hexadecimal_character_reference_state_transition_semicolon() {
     const C: Option<char> = Some(';');
     let mut current_state: DataState = DataState::HexidecimalCharacterReferenceState;
-    let mut character_reference_code: i32 = 10;
+    let mut character_reference_code: u32 = 10;
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = hexadecimal_character_reference_state_transition(
@@ -188,7 +188,7 @@ mod tests {
   fn test_hexadecimal_character_reference_state_transition_anything_else() {
     const C: Option<char> = Some('X');
     let mut current_state: DataState = DataState::HexidecimalCharacterReferenceState;
-    let mut character_reference_code: i32 = 10;
+    let mut character_reference_code: u32 = 10;
 
     let expected: (Option<Vec<Token>>, bool) = (None, true);
     let result = hexadecimal_character_reference_state_transition(

@@ -7,7 +7,7 @@ pub fn numeric_character_reference_state_transition(
   c: Option<char>, 
   current_state: &mut DataState,
   temporary_buffer: &mut String,
-  character_reference_code: &mut i32
+  character_reference_code: &mut u32
 ) -> (Option<Vec<Token>>, bool) {
   println!("Numeric Character Reference State c: '{:?}'", c);
 
@@ -54,7 +54,7 @@ mod tests {
     const C: Option<char> = Some('x');
     let mut current_state: DataState = DataState::NumericCharacterReferenceState;
     let mut temporary_buffer: String = "abc".to_string();
-    let mut character_reference_code: i32 = 1;
+    let mut character_reference_code: u32 = 1;
 
     let expected: (Option<Vec<Token>>, bool) = (None, false);
     let result = numeric_character_reference_state_transition(
@@ -75,7 +75,7 @@ mod tests {
     const C: Option<char> = Some('g');
     let mut current_state: DataState = DataState::NumericCharacterReferenceState;
     let mut temporary_buffer: String = "abc".to_string();
-    let mut character_reference_code: i32 = 1;
+    let mut character_reference_code: u32 = 1;
 
     let expected: (Option<Vec<Token>>, bool) = (None, true);
     let result = numeric_character_reference_state_transition(

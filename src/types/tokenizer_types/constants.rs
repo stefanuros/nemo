@@ -2236,38 +2236,36 @@ lazy_static! {
       ("&zwnj;".to_string(), "\u{200C}".to_string())
     ].iter().cloned().collect();
   };
-}
 
-lazy_static! {
-  pub static ref NUMERIC_CHARACTER_REFERENCE: HashMap<&'static str, String> = {
+  pub static ref NUMERIC_CHARACTER_REFERENCE: HashMap<&'static str, u32> = {
     return [
-      ("80", "\u{20AC}".to_string()),
-      ("82", "\u{201A}".to_string()),
-      ("83", "\u{0192}".to_string()),
-      ("84", "\u{201E}".to_string()),
-      ("85", "\u{2026}".to_string()),
-      ("86", "\u{2020}".to_string()),
-      ("87", "\u{2021}".to_string()),
-      ("88", "\u{02C6}".to_string()),
-      ("89", "\u{2030}".to_string()),
-      ("8a", "\u{0160}".to_string()),
-      ("8b", "\u{2039}".to_string()),
-      ("8c", "\u{0152}".to_string()),
-      ("8e", "\u{017D}".to_string()),
-      ("91", "\u{2018}".to_string()),
-      ("92", "\u{2019}".to_string()),
-      ("93", "\u{201C}".to_string()),
-      ("94", "\u{201D}".to_string()),
-      ("95", "\u{2022}".to_string()),
-      ("96", "\u{2013}".to_string()),
-      ("97", "\u{2014}".to_string()),
-      ("98", "\u{02DC}".to_string()),
-      ("99", "\u{2122}".to_string()),
-      ("9a", "\u{0161}".to_string()),
-      ("9b", "\u{203A}".to_string()),
-      ("9c", "\u{0153}".to_string()),
-      ("9e", "\u{017E}".to_string()),
-      ("9f", "\u{0178}".to_string()),
+      ("80", 0x20AC),
+      ("82", 0x201A),
+      ("83", 0x0192),
+      ("84", 0x201E),
+      ("85", 0x2026),
+      ("86", 0x2020),
+      ("87", 0x2021),
+      ("88", 0x02C6),
+      ("89", 0x2030),
+      ("8a", 0x0160),
+      ("8b", 0x2039),
+      ("8c", 0x0152),
+      ("8e", 0x017D),
+      ("91", 0x2018),
+      ("92", 0x2019),
+      ("93", 0x201C),
+      ("94", 0x201D),
+      ("95", 0x2022),
+      ("96", 0x2013),
+      ("97", 0x2014),
+      ("98", 0x02DC),
+      ("99", 0x2122),
+      ("9a", 0x0161),
+      ("9b", 0x203A),
+      ("9c", 0x0153),
+      ("9e", 0x017E),
+      ("9f", 0x0178),
     ].iter().cloned().collect();
   };
 }

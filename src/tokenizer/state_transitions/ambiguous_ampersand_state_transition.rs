@@ -124,7 +124,7 @@ mod tests {
   fn test_ambiguous_ampersand_state_transition_ascii_alphanumeric_not_consumed_as_attribute() {
     const C: Option<char> = Some('g');
     let mut current_state: DataState = DataState::AmbiguousAmpersandState;
-    let mut return_state: DataState = DataState::ScriptDataDDoubleEscapedDashState;
+    let mut return_state: DataState = DataState::ScriptDataDoubleEscapedDashState;
     let mut current_token: Option<Token> = Some(Token::StartTagToken(TagToken {
       attributes: vec![
         Attribute {
@@ -159,7 +159,7 @@ mod tests {
 
     assert_eq!(expected, result);
     assert_eq!(DataState::AmbiguousAmpersandState, current_state);
-    assert_eq!(DataState::ScriptDataDDoubleEscapedDashState, return_state);
+    assert_eq!(DataState::ScriptDataDoubleEscapedDashState, return_state);
     assert_eq!(expected_current_token, current_token);
   }
 
