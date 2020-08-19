@@ -1,6 +1,5 @@
 use crate::types::tokenizer_types::data_states::DataState;
 use crate::types::tokenizer_types::tokens::Token;
-use itertools;
 
 mod state_transitions;
 
@@ -26,7 +25,7 @@ pub fn init_tokenization() {
   let mut tokens: Vec<Token> = Vec::new();
 
   // A created token that can be used to keep track of tokens being built over multiple characters
-  let mut create_token: Option<Token> = None;
+  let mut current_token: Option<Token> = None;
 
   let mut current_state = DataState::default();
   let mut return_state = DataState::default();
@@ -35,6 +34,10 @@ pub fn init_tokenization() {
 
   // The iterator going through all of the characters in the input stream
   let mut iter = itertools::multipeek(html.chars());
+
+  let mut temporary_buffer: String = "".to_string();
+  let mut recent_start_tag: Option<Token> = None;
+  let mut character_reference_code: u32 = 0;
 
   let mut is_iter_empty = false;
   // Flag to check whether the next step should consume a new character or reuse the previous character
@@ -47,18 +50,16 @@ pub fn init_tokenization() {
       current_input_character = iter.next();
     }
 
-    // Pass the iter to the state handler for specific states
-    let should_pass_iter = 
-      current_state == DataState::MarkupDeclarationOpenState ||
-      current_state == DataState::AfterDOCTYPENameState;
-
     // Get the emitted tokens and whether the character is safe to iterate or if it should be reconsumed
     let (emitted_tokens, should_reconsume) = tokenize(
       current_input_character, 
       &mut current_state, 
       &mut return_state,
-      &mut create_token,
-      if should_pass_iter { Some(&mut iter) } else { None },
+      &mut current_token,
+      &mut temporary_buffer,
+      &recent_start_tag,
+      &mut iter,
+      &mut character_reference_code
     );
 
     // Deal with current_input_character reconsuming
@@ -66,6 +67,13 @@ pub fn init_tokenization() {
 
     // Deal with any emitted tokens
     if emitted_tokens.is_some() {
+      // get the most recent start tag token
+      for token in emitted_tokens.as_ref().unwrap() {
+        if let Token::StartTagToken(_) = token {
+          recent_start_tag = Some(token.clone());
+        }
+      }
+
       // Add the emitted tokens to the list of all emitted tokens
       tokens.append(&mut emitted_tokens.unwrap());
     }
@@ -83,40 +91,92 @@ fn tokenize(
   c: Option<char>, 
   current_state: &mut DataState, 
   return_state: &mut DataState,
-  create_token: &mut Option<Token>,
-  iter: Option<&mut itertools::MultiPeek<std::str::Chars>>
+  current_token: &mut Option<Token>,
+  temporary_buffer: &mut String,
+  recent_start_tag: &Option<Token>,
+  iter: &mut itertools::MultiPeek<std::str::Chars>,
+  character_reference_code: &mut u32
 ) -> (Option<Vec<Token>>, bool) {
-  match current_state {
-    DataState::DataState => state_transitions::data_state_transition(c, current_state, return_state, create_token),
-    // DataState::RCDataState => state_transitions::rcdata_state_transition(c),
-    _ => (None, false),
+  return match current_state {
+    DataState::DataState => state_transitions::data_state_transition(c, current_state, return_state),
+    DataState::RCDataState => state_transitions::rcdata_state_transition(c, current_state, return_state),
+    DataState::RAWTEXTState => state_transitions::rawtext_state_transition(c, current_state),
+    DataState::ScriptDataState => state_transitions::script_data_state_transition(c, current_state),
+    DataState::PLAINTEXTState => state_transitions::plaintext_state_transition(c),
+    DataState::TagOpenState => state_transitions::tag_open_state_transition(c, current_state, current_token),
+    DataState::EndTagOpenState => state_transitions::end_tag_open_state_transition(c, current_state, current_token),
+    DataState::TagNameState => state_transitions::tag_name_state_transition(c, current_state, current_token),
+    DataState::RCDATALessThanSignState => state_transitions::rcdata_less_than_sign_state_transition(c, current_state, temporary_buffer),
+    DataState::RCDATAEndTagOpenState => state_transitions::rcdata_end_tag_open_state_transition(c, current_state, current_token),
+    DataState::RCDATAEndTagNameState => state_transitions::rcdata_end_tag_name_state_transition(c, current_state, current_token, temporary_buffer, recent_start_tag),
+    DataState::RAWTEXTLessThanSignState => state_transitions::rawtext_less_than_sign_state_transition(c, current_state, temporary_buffer),
+    DataState::RAWTEXTEndTagOpenState => state_transitions::rawtext_end_tag_open_state_transition(c, current_state, current_token),
+    DataState::RAWTEXTEndTagNameState => state_transitions::rawtext_end_tag_name_state_transition(c, current_state, current_token, temporary_buffer, recent_start_tag),
+    DataState::ScriptDataLessThanSignState => state_transitions::script_data_less_than_sign_state_transition(c, current_state, temporary_buffer),
+    DataState::ScriptDataEndTagOpenState => state_transitions::script_data_end_tag_open_state_transition(c, current_state, current_token),
+    DataState::ScriptDataEndTagNameState => state_transitions::script_data_end_tag_name_state_transition(c, current_state, current_token, temporary_buffer, recent_start_tag),
+    DataState::ScriptDataEscapeStartState => state_transitions::script_data_escape_start_state_transition(c, current_state),
+    DataState::ScriptDataEscapeStartDashState => state_transitions::script_data_escape_start_dash_state_transition(c, current_state),
+    DataState::ScriptDataEscapedState => state_transitions::script_data_escaped_state_transition(c, current_state),
+    DataState::ScriptDataEscapedDashState => state_transitions::script_data_escaped_dash_state_transition(c, current_state),
+    DataState::ScriptDataEscapedDashDashState => state_transitions::script_data_escaped_dash_dash_state_transition(c, current_state),
+    DataState::ScriptDataEscapedLessThanSignState => state_transitions::script_data_escaped_less_than_sign_state_transition(c, current_state, temporary_buffer),
+    DataState::ScriptDataEscapedEndTagOpenState => state_transitions::script_data_escaped_end_tag_open_state_transition(c, current_state, current_token),
+    DataState::ScriptDataEscapedEndTagNameState => state_transitions::script_data_escaped_end_tag_name_state_transition(c, current_state, current_token, temporary_buffer, recent_start_tag),
+    DataState::ScriptDataDoubleEscapeStartState => state_transitions::script_data_double_escape_start_state_transition(c, current_state, temporary_buffer),
+    DataState::ScriptDataDoubleEscapedState => state_transitions::script_data_double_escaped_state_transition(c, current_state),
+    DataState::ScriptDataDoubleEscapedDashState => state_transitions::script_data_double_escaped_dash_state_transition(c, current_state),
+    DataState::ScriptDataDoubleEscapedDashDashState => state_transitions::script_data_double_escaped_dash_dash_state_transition(c, current_state),
+    DataState::ScriptDataDoubleEscapedLessThanSignState => state_transitions::script_data_double_escaped_less_than_sign_state_transition(c, current_state, temporary_buffer),
+    DataState::ScriptDataDoubleEscapeEndState => state_transitions::script_data_double_escape_end_state_transition(c, current_state, temporary_buffer),
+    DataState::BeforeAttributeNameState => state_transitions::before_attribute_name_state_transition(c, current_state, current_token),
+    DataState::AttributeNameState => state_transitions::attribute_name_state_transition(c, current_state, current_token),
+    DataState::AfterAttributeNameState => state_transitions::after_attribute_name_state_transition(c, current_state, current_token),
+    DataState::BeforeAttributeValueState => state_transitions::before_attribute_value_state_transition(c, current_state, current_token),
+    DataState::AttributeValueDoubleQuotedState => state_transitions::attribute_value_double_quoted_state_transition(c, current_state, return_state, current_token),
+    DataState::AttributeValueSingleQuotedState => state_transitions::attribute_value_single_quoted_state_transition(c, current_state, return_state, current_token),
+    DataState::AttributeValueUnquotedState => state_transitions::attribute_value_unquoted_state_transition(c, current_state, return_state, current_token),
+    DataState::AfterAttributeValueQuotedState => state_transitions::after_attribute_value_quoted_state_transition(c, current_state, current_token),
+    DataState::SelfClosingStartTagState => state_transitions::self_closing_start_tag_state_transition(c, current_state, current_token),
+    DataState::BogusCommentState => state_transitions::bogus_comment_state_transition(c, current_state, current_token),
+    DataState::MarkupDeclarationOpenState => state_transitions::markup_declaration_open_state_transition(c, current_state, current_token, iter),
+    DataState::CommentStartState => state_transitions::comment_start_state_transition(c, current_state, current_token),
+    DataState::CommentStartDashState => state_transitions::comment_start_dash_state_transition(c, current_state, current_token),
+    DataState::CommentState => state_transitions::comment_state_transition(c, current_state, current_token),
+    DataState::CommentLessThanSignState => state_transitions::comment_less_than_sign_state_transition(c, current_state, current_token),
+    DataState::CommentLessThanSignBangState => state_transitions::comment_less_than_sign_bang_state_transition(c, current_state),
+    DataState::CommentLessThanSignBangDashState => state_transitions::comment_less_than_sign_bang_dash_state_transition(c, current_state),
+    DataState::CommentLessThanSignBangDashDashState => state_transitions::comment_less_than_sign_bang_dash_dash_state_transition(c, current_state),
+    DataState::CommentEndDashState => state_transitions::comment_end_dash_state_transition(c, current_state, current_token),
+    DataState::CommentEndState => state_transitions::comment_end_state_transition(c, current_state, current_token),
+    DataState::CommentEndBangState => state_transitions::comment_end_bang_state_transition(c, current_state, current_token),
+    DataState::DOCTYPEState => state_transitions::doctype_state_transition(c, current_state),
+    DataState::BeforeDOCTYPENameState => state_transitions::before_doctype_name_state_transition(c, current_state, current_token),
+    DataState::DOCTYPENameState => state_transitions::doctype_name_state_transition(c, current_state, current_token),
+    DataState::AfterDOCTYPENameState => state_transitions::after_doctype_name_state_transition(c, current_state, current_token, iter),
+    DataState::AfterDOCTYPEPublicKeywordState => state_transitions::after_doctype_public_keyword_state_transition(c, current_state, current_token),
+    DataState::BeforeDOCTYPEPublicIdentifierState => state_transitions::before_doctype_public_identifier_state_transition(c, current_state, current_token),
+    DataState::DOCTYPEPublicIdentifierDoubleQuotedState => state_transitions::doctype_public_identifier_double_quoted_state_transition(c, current_state, current_token),
+    DataState::DOCTYPEPublicIdentifierSingleQuotedState => state_transitions::doctype_public_identifier_single_quoted_state_transition(c, current_state, current_token),
+    DataState::AfterDOCTYPEPublicIdentifierState => state_transitions::after_doctype_public_identifier_state_transition(c, current_state, current_token),
+    DataState::BetweenDOCTYPEPublicAndSystemIdentifiersState => state_transitions::between_doctype_public_and_system_identifiers_state_transition(c, current_state, current_token),
+    DataState::AfterDOCTYPESystemKeywordState => state_transitions::after_doctype_system_keyword_state_transition(c, current_state, current_token),
+    DataState::BeforeDOCTYPESystemIdentifierState => state_transitions::before_doctype_system_identifier_state_transition(c, current_state, current_token),
+    DataState::DOCTYPESystemIdentifierDoubleQuotedState => state_transitions::doctype_system_identifier_double_quoted_state_transition(c, current_state, current_token),
+    DataState::DOCTYPESystemIdentifierSingleQuotedState => state_transitions::doctype_system_identifier_single_quoted_state_transition(c, current_state, current_token),
+    DataState::AfterDOCTYPESystemIdentifierState => state_transitions::after_doctype_system_identifier_state_transition(c, current_state, current_token),
+    DataState::BogusDOCTYPEState => state_transitions::bogus_doctype_state_transition(c, current_state, current_token),
+    DataState::CDATASectionState => state_transitions::cdata_section_state_transition(c, current_state),
+    DataState::CDATASectionBracketState => state_transitions::cdata_section_bracket_state_transition(c, current_state),
+    DataState::CDATASectionEndState => state_transitions::cdata_section_end_state_transition(c, current_state),
+    DataState::CharacterReferenceState => state_transitions::character_reference_state_transition(c, current_state, return_state, current_token, temporary_buffer),
+    DataState::NamedCharacterReferenceState => state_transitions::named_character_reference_state_transition(c, current_state, return_state, current_token, temporary_buffer, iter),
+    DataState::AmbiguousAmpersandState => state_transitions::ambiguous_ampersand_state_transition(c, current_state, return_state, current_token),
+    DataState::NumericCharacterReferenceState => state_transitions::numeric_character_reference_state_transition(c, current_state, temporary_buffer, character_reference_code),
+    DataState::HexadecimalCharacterReferenceStartState => state_transitions::hexadecimal_character_reference_start_state_transition(c, current_state, return_state, current_token, temporary_buffer),
+    DataState::DecimalCharacterReferenceStartState => state_transitions::decimal_character_reference_start_state_transition(c, current_state, return_state, current_token, temporary_buffer),
+    DataState::HexidecimalCharacterReferenceState => state_transitions::hexadecimal_character_reference_state_transition(c, current_state, character_reference_code),
+    DataState::DecimalCharacterReferenceState => state_transitions::decimal_character_reference_state_transition(c, current_state, character_reference_code),
+    DataState::NumericCharacterReferenceEndState => state_transitions::numeric_character_reference_end_state_transition(c, current_state, return_state, current_token, temporary_buffer, character_reference_code),
   }
 }
-
-  // The following code is example code for states 42 and 56
-  // let mut test_string: String = "".to_string();
-
-  // for i in 0 .. 7 {
-  //   match iter.peek() {
-  //     Some(v) => test_string = [test_string, v.to_string()].concat(),
-  //     None => print!("run anything else code"),
-  //   }
-
-  //   if test_string.to_ascii_lowercase() == "doctype" {
-  //     print!("run doctype code");
-  //   }
-
-  //   match test_string.as_str() {
-  //     "--" => print!("run -- code"),
-  //     "[CDATA[" => print!("run cdata code"),
-  //     _ => (),
-  //   }
-
-  //   if !"doctype".starts_with(test_string.to_ascii_lowercase().as_str()) &&
-  //     !"[CDATA[".starts_with(test_string.as_str()) &&
-  //     !"--".starts_with(test_string.as_str()) {
-  //       print!("run anything else code")
-  //   }
-  // }
-
-  // println!("{:?}", iter.peek().unwrap().to_string());
